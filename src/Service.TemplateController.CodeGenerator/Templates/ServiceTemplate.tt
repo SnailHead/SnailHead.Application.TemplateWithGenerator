@@ -1,0 +1,28 @@
+﻿<#@ template visibility="internal" #>
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Dal;
+using Common.Enums;
+using Common.Search;
+using <#= EntityDescription.Name #> = Entities.<#= EntityDescription.Name #>;
+
+namespace BL;
+
+public class <#= EntityDescription.PluralName #>Service : I<#= EntityDescription.PluralName #>Service
+{
+	public Task<<#= EntityDescription.PluralName #>> GetByIdAsync(Guid id)
+	{
+	}
+}
+
+
+<#+
+	internal EntityDescription EntityDescription;
+	internal int MaxLineWidth;
+	internal ServiceTemplate(EntityDescription entityDescription, int maxLineWidth) {
+		EntityDescription = entityDescription;
+		MaxLineWidth = maxLineWidth;
+	}
+#>

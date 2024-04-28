@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "ServerCodeGenerator": {
+      "commandName": "Project",
+      "commandLineArgs": "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/",
+      "environmentVariables": {
+        "MSBuildSDKsPath": "C:\\Program Files\\dotnet\\sdk\\3.0.100"
+      }
+    }
+  }
+}
