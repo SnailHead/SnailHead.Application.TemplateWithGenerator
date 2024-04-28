@@ -15,9 +15,9 @@ namespace CodeGeneration.ServerCodeGenerator.Templates
     /// Class to produce the template output
     /// </summary>
     
-    #line 1 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ServiceTemplate.tt"
+    #line 1 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/IServiceTemplate.tt"
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.TextTemplating", "16.0.0.0")]
-    internal partial class ServiceTemplate : ServiceTemplateBase
+    internal partial class IServiceTemplate : IServiceTemplateBase
     {
 #line hidden
         /// <summary>
@@ -25,64 +25,43 @@ namespace CodeGeneration.ServerCodeGenerator.Templates
         /// </summary>
         public virtual string TransformText()
         {
-            this.Write("using Microsoft.Extensions.Logging;\nusing Pepegov.UnitOfWork;\nusing Service.TemplateController.BL.Services.Interfaces;\nusing Service.TemplateController.BL.Services.Base;\nusing ");
+            this.Write("using System;\nusing System.Collections.Generic;\nusing System.Linq;\nusing System.Threading.Tasks;\nusing Service.TemplateController.BL.Services.Base;\nusing ");
             
-            #line 6 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ServiceTemplate.tt"
+            #line 7 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/IServiceTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.Name));
             
             #line default
             #line hidden
             this.Write(" = Service.TemplateController.DAL.Entities.");
             
-            #line 6 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ServiceTemplate.tt"
+            #line 7 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/IServiceTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.Name));
             
             #line default
             #line hidden
-            this.Write(";\n\nnamespace Service.TemplateController.BL.Services;\n\npublic class ");
+            this.Write(";\n\nnamespace Service.TemplateController.BL.Services.Interfaces;\n\npublic interface I");
             
-            #line 10 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ServiceTemplate.tt"
+            #line 11 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/IServiceTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.Name));
             
             #line default
             #line hidden
-            this.Write("Service : BaseService<");
+            this.Write("Service : IBaseService<");
             
-            #line 10 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ServiceTemplate.tt"
+            #line 11 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/IServiceTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.Name));
             
             #line default
             #line hidden
-            this.Write(">, I");
-            
-            #line 10 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ServiceTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.Name));
-            
-            #line default
-            #line hidden
-            this.Write("Service\n{\n\tpublic ");
-            
-            #line 12 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ServiceTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.Name));
-            
-            #line default
-            #line hidden
-            this.Write("Service(UnitOfWorkManager unitOfWork, ILogger<");
-            
-            #line 12 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ServiceTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.Name));
-            
-            #line default
-            #line hidden
-            this.Write("Service> logger) : base(unitOfWork, logger)\n    {\n    }\n}\n\n\n");
+            this.Write(">\n{\n}\n\n\n");
             return this.GenerationEnvironment.ToString();
         }
         
-        #line 18 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ServiceTemplate.tt"
+        #line 16 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/IServiceTemplate.tt"
 
 	internal EntityDescription EntityDescription;
 	internal int MaxLineWidth;
-	internal ServiceTemplate(EntityDescription entityDescription, int maxLineWidth) {
+	internal IServiceTemplate(EntityDescription entityDescription, int maxLineWidth) {
 		EntityDescription = entityDescription;
 		MaxLineWidth = maxLineWidth;
 	}
@@ -99,7 +78,7 @@ namespace CodeGeneration.ServerCodeGenerator.Templates
     /// Base class for this transformation
     /// </summary>
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.TextTemplating", "16.0.0.0")]
-    internal class ServiceTemplateBase
+    internal class IServiceTemplateBase
     {
         #region Fields
         private global::System.Text.StringBuilder generationEnvironmentField;

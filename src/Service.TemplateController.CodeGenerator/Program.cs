@@ -10,5 +10,4 @@ Console.ReadLine();
 }
 generator.Generate();
 Console.WriteLine("Завершено");
-Console.ReadLine();
 

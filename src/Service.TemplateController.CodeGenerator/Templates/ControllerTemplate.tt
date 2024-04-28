@@ -1,72 +1,80 @@
 ﻿<#@ template visibility="internal" #>
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Pepegov.MicroserviceFramework.ApiResults;
+using Pepegov.MicroserviceFramework.AspNetCore.WebApi;
+using Pepegov.MicroserviceFramework.Data.Exceptions;
+using Service.TemplateController.BL.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Common.Enums;
-using Common.Search;
-using BL;
-using UI.Areas.Admin.Models;
-using UI.Areas.Admin.Models.ViewModels;
-using UI.Other;
+using Service.TemplateController.DAL.Entities;
+using System.Net;
+using Pepegov.UnitOfWork.Entityes;
 
-namespace UI.Areas.Admin.Controllers
+namespace Service.TemplateController.PL.Controllers;
+
+[Route("/<#= EntityDescription.PluralName.PascalToKebabCase() #>")]
+public class <#= EntityDescription.PluralName #>Controller : ControllerBase
 {
-	[Area("Admin")]
-	[Authorize(Roles = nameof(UserRole.Admin))]
-	public class <#= EntityDescription.PluralName #>Controller : Controller
+	private readonly I<#= EntityDescription.PluralName #>Service _<#= EntityDescription.PluralName.ToFirstLower() #>Service;
+
+	public <#= EntityDescription.PluralName #>Controller(I<#= EntityDescription.PluralName #>Service <#= EntityDescription.PluralName.ToFirstLower() #>Service)
 	{
-		public async Task<IActionResult> Index(int page = 1)
-		{
-			const int objectsPerPage = 20;
-			var searchResult = await new <#= EntityDescription.PluralName #>BL().GetAsync(new <#= EntityDescription.PluralName #>SearchParams
-			{
-				StartIndex = (page - 1) * objectsPerPage,
-				ObjectsCount = objectsPerPage,
-			});
-			var viewModel = new SearchResultViewModel<<#= EntityDescription.Name #>Model>(<#= EntityDescription.Name #>Model.FromEntitiesList(searchResult.Objects), 
-				searchResult.Total, searchResult.RequestedStartIndex, searchResult.RequestedObjectsCount, 5);
-			return View(viewModel);
-		}
+		_<#= EntityDescription.PluralName.ToFirstLower() #>Service = <#= EntityDescription.PluralName.ToFirstLower() #>Service;
+	}
 
-		public async Task<IActionResult> Update(int? id)
-		{
-			var model = new <#= EntityDescription.Name #>Model();
-			if (id != null)
-			{
-				model = <#= EntityDescription.Name #>Model.FromEntity(await new <#= EntityDescription.PluralName #>BL().GetAsync(id.Value));
-				if (model == null)
-					return NotFound();
-			}
-			return View(model);
-		}
+	[HttpGet]
+	[ProducesResponseType(typeof(ApiResult<<#= EntityDescription.PluralName #>>), StatusCodes.Status200OK)]
+	[Route("get-paged-list")]
+	public async Task<IResult> GetPagedList(int page = 1, int pageSize = 20)
+	{
+		var pagedList = await _<#= EntityDescription.PluralName.ToFirstLower() #>Service.GetPagedListAsync(page, pageSize, cancellationToken: HttpContext.RequestAborted);
+		return Results.Extensions.Custom(new ApiResult<IPagedList<<#= EntityDescription.PluralName #>>>(pagedList, HttpStatusCode.OK));
+	}
 
-		[HttpPost]
-		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Update(<#= EntityDescription.Name #>Model model)
+	[HttpGet]
+	[ProducesResponseType(typeof(ApiResult<<#= EntityDescription.PluralName #>>), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(ApiResult), StatusCodes.Status400BadRequest)]
+	[Route("get-by-id")]
+	public async Task<IResult> GetById(Guid id)
+	{
+		var entity = await _<#= EntityDescription.PluralName.ToFirstLower() #>Service.GetByIdAsync(id, cancellationToken: HttpContext.RequestAborted);
+		if (entity is null)
 		{
-			if (!ModelState.IsValid)
-			{
-				return View(model);
-			}
-			await new <#= EntityDescription.PluralName #>BL().AddOrUpdateAsync(<#= EntityDescription.Name #>Model.ToEntity(model));
-			TempData[OperationResultType.Success.ToString()] = "Данные сохранены";
-			return RedirectToAction("Index");
+			return Results.Extensions.Custom(new ApiResult<<#= EntityDescription.PluralName #>?>(null, HttpStatusCode.NotFound, new MicroserviceNotFoundException($"<#= EntityDescription.PluralName #> with id {id} not found")));
 		}
+		return Results.Extensions.Custom(new ApiResult<<#= EntityDescription.PluralName #>>(entity, HttpStatusCode.OK));
+	}
 
-		public async Task<IActionResult> Delete(int id)
+	[HttpPost]
+	[ValidateAntiForgeryToken]
+	[ProducesResponseType(typeof(ApiResult<<#= EntityDescription.PluralName #>>), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(ApiResult), StatusCodes.Status400BadRequest)]
+	[Route("update")]
+	public async Task<IResult> Update(<#= EntityDescription.Name #> model)
+	{
+		var result = await _<#= EntityDescription.PluralName.ToFirstLower() #>Service.Update(model, cancellationToken: HttpContext.RequestAborted);
+		if (result is null)
 		{
-			var result = await new <#= EntityDescription.PluralName #>BL().DeleteAsync(id);
-			if (result)
-				TempData[OperationResultType.Success.ToString()] = "Объект удален";
-			else
-				TempData[OperationResultType.Error.ToString()] = "Объект не найден";
-			return RedirectToAction("Index");
+			return Results.Extensions.Custom(new ApiResult<<#= EntityDescription.Name #>>(HttpStatusCode.BadRequest, new MicroserviceInvalidOperationException("Update <#= EntityDescription.Name #> failed")));
 		}
+		return Results.Extensions.Custom(new ApiResult<<#= EntityDescription.Name #>>(model, HttpStatusCode.OK));
+	}
+	
+	[HttpDelete]
+	[Route("delete")]
+	[ProducesResponseType(typeof(ApiResult), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(ApiResult), StatusCodes.Status400BadRequest)]
+	public async Task<IResult> Delete(Guid id)
+	{
+		var result = await _<#= EntityDescription.PluralName.ToFirstLower() #>Service.DeleteAsync(id, cancellationToken: HttpContext.RequestAborted);
+		if (!result)
+		{
+			return Results.Extensions.Custom(new ApiResult(HttpStatusCode.BadRequest, new MicroserviceInvalidOperationException("Delete <#= EntityDescription.Name #> failed")));
+		}
+		return Results.Extensions.Custom(new ApiResult(HttpStatusCode.OK));
 	}
 }
+
 <#+
 	internal EntityDescription EntityDescription;
 	internal int MaxLineWidth;

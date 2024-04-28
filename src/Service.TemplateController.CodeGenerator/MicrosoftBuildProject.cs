@@ -20,24 +20,7 @@ namespace CodeGeneration.ServerCodeGenerator
 			document.Load(path);
 			BuildActionToSectionDictionary = new Dictionary<string, XmlNode>();
 		}
-
-		public void AddItem(Item item)
-		{
-			var xmlSection = BuildActionToSectionDictionary.ContainsKey(item.BuildAction) ?
-				BuildActionToSectionDictionary[item.BuildAction] :
-				document.SelectNodes("/Project/ItemGroup").Cast<XmlNode>()
-					.OrderByDescending(section => section.SelectNodes(item.BuildAction).Count).FirstOrDefault();
-			BuildActionToSectionDictionary[item.BuildAction] = xmlSection;
-			if (xmlSection.SelectSingleNode($"{item.BuildAction}[@Include='{item.Path}']") == null)
-			{
-				var xmlNode = document.CreateNode(XmlNodeType.Element, item.BuildAction, null);
-				var includeAttribute = document.CreateAttribute("Include");
-				includeAttribute.Value = item.Path;
-				xmlNode.Attributes.Append(includeAttribute);
-				xmlSection.AppendChild(xmlNode);
-			}
-		}
-
+		
 		public void Save()
 		{
 			document.Save(Path);

@@ -29,9 +29,8 @@ namespace CodeGeneration.ServerCodeGenerator
 			MessagesWriter = messagesWriter;
 			MergeUtility = mergeUtility;
 			var dalProjectPath = Path.Combine(SolutionFolderPath, "Service.TemplateController.DAL", "Entities");
-			var entityFiles = Directory.GetFiles(dalProjectPath).Where(item => item.EndsWith(".cs")).Select(item => item.Split(Path.PathSeparator).LastOrDefault().Replace(".cs", string.Empty)).ToArray();
-			Entities = entityFiles.Select(item => new EntityDescription(item, item, GeneratedFiles.Service)).ToList();
-
+			var entityFiles = Directory.GetFiles(dalProjectPath).Where(item => item.EndsWith(".cs")).Select(item => item.Split(Path.DirectorySeparatorChar).LastOrDefault().Replace(".cs", string.Empty)).ToArray();
+			Entities = entityFiles.Select(item => new EntityDescription(item, item, GeneratedFiles.Controller)).ToList();
 		}
 
         internal void Generate()
@@ -42,6 +41,10 @@ namespace CodeGeneration.ServerCodeGenerator
 				project = new MicrosoftBuildProject(Path.Combine(SolutionFolderPath, "Service.TemplateController.BL", "Service.TemplateController.BL.csproj"));
 				GenerateBusinessLogicClasses(project);
 				project.Save();
+				
+				project = new MicrosoftBuildProject(Path.Combine(SolutionFolderPath, "Service.TemplateController.PL", "Service.TemplateController.PL.csproj"));
+				GenerateControllers(project);
+				project.Save();
 			}
 		}
 		private void GenerateBusinessLogicClasses(MicrosoftBuildProject project)
@@ -50,8 +53,14 @@ namespace CodeGeneration.ServerCodeGenerator
 			{
 				if ((description.Files & GeneratedFiles.Service) == GeneratedFiles.None)
 					continue;
+				var interfaceFileName = $"I{description.PluralName}Service.cs";
+				var interfaceItem = new MicrosoftBuildProject.Item(Path.Combine("Services", "Interfaces", interfaceFileName), "Compile");
+				CreateFileInProject(project, interfaceItem, 
+					new IServiceTemplate(description.ExcludeNewProperties(), MaxLineWidth).TransformText(),
+					new IServiceTemplate(description, MaxLineWidth).TransformText(), 
+					$"Генерация интерфейса бизнес-логики {interfaceFileName}...");
 				var fileName = description.PluralName + "Service.cs";
-				var item = new MicrosoftBuildProject.Item(fileName, "Compile");
+				var item = new MicrosoftBuildProject.Item(Path.Combine("Services", fileName), "Compile");
 				CreateFileInProject(project, item, 
 					new ServiceTemplate(description.ExcludeNewProperties(), MaxLineWidth).TransformText(),
 					new ServiceTemplate(description, MaxLineWidth).TransformText(), 
@@ -66,7 +75,7 @@ namespace CodeGeneration.ServerCodeGenerator
 				if ((description.Files & GeneratedFiles.Controller) == GeneratedFiles.None)
 					continue;
 				var fileName = description.PluralName + "Controller.cs";
-				var item = new MicrosoftBuildProject.Item($"Areas\\Admin\\Controllers\\{fileName}", "Compile");
+				var item = new MicrosoftBuildProject.Item(Path.Combine("Controllers", fileName), "Compile");
 				CreateFileInProject(project, item, 
 					new ControllerTemplate(description.ExcludeNewProperties(), MaxLineWidth).TransformText(),
 					new ControllerTemplate(description, MaxLineWidth).TransformText(), 
@@ -80,7 +89,6 @@ namespace CodeGeneration.ServerCodeGenerator
 			var projectDirectory = new FileInfo(project.Path).Directory.FullName;
 			var filePath = Path.Combine(projectDirectory, item.Path);
 			new FileInfo(filePath).Directory.Create();
-			//project.AddItem(item);
 			var fileContent = currentFileContent;
 			if (!File.Exists(filePath) || ExistingFilesProcessMode != ExistingFilesProcessMode.Skip)
 			{

@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <RootNamespace>Service.TemplateController.PL</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="..\.dockerignore">
+      <Link>.dockerignore</Link>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Service.TemplateController.BL\Service.TemplateController.BL.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Pepegov.MicroserviceFramework.ApiResults" Version="1.0.4" />
+    <PackageReference Include="Pepegov.MicroserviceFramework.AspNetCore" Version="2.2.2" />
+  </ItemGroup>
+</Project>

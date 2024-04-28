@@ -1,0 +1,23 @@
+﻿<#@ template visibility="internal" #>
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Service.TemplateController.BL.Services.Base;
+using <#= EntityDescription.Name #> = Service.TemplateController.DAL.Entities.<#= EntityDescription.Name #>;
+
+namespace Service.TemplateController.BL.Services.Interfaces;
+
+public interface I<#= EntityDescription.Name #>Service : IBaseService<<#= EntityDescription.Name #>>
+{
+}
+
+
+<#+
+	internal EntityDescription EntityDescription;
+	internal int MaxLineWidth;
+	internal IServiceTemplate(EntityDescription entityDescription, int maxLineWidth) {
+		EntityDescription = entityDescription;
+		MaxLineWidth = maxLineWidth;
+	}
+#>

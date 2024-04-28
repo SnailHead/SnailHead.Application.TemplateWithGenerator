@@ -21,7 +21,13 @@
     <Compile Include="MicrosoftBuildProject.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="PropertyDescription.cs" />
+    <Compile Include="StringExtensions.cs" />
     <Compile Include="Templates\ControllerTemplate.cs" />
+    <Compile Include="Templates\IServiceTemplate.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>IServiceTemplate.tt</DependentUpon>
+    </Compile>
     <Compile Include="Templates\ServiceTemplate.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -41,6 +47,10 @@
     <None Update="Templates\ControllerTemplate.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>ControllerTemplate.cs</LastGenOutput>
+    </None>
+    <None Update="Templates\IServiceTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>IServiceTemplate.cs</LastGenOutput>
     </None>
   </ItemGroup>
 

@@ -1,20 +1,17 @@
 ﻿<#@ template visibility="internal" #>
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Dal;
-using Common.Enums;
-using Common.Search;
-using <#= EntityDescription.Name #> = Entities.<#= EntityDescription.Name #>;
+using Microsoft.Extensions.Logging;
+using Pepegov.UnitOfWork;
+using Service.TemplateController.BL.Services.Interfaces;
+using Service.TemplateController.BL.Services.Base;
+using <#= EntityDescription.Name #> = Service.TemplateController.DAL.Entities.<#= EntityDescription.Name #>;
 
-namespace BL;
+namespace Service.TemplateController.BL.Services;
 
-public class <#= EntityDescription.PluralName #>Service : I<#= EntityDescription.PluralName #>Service
+public class <#= EntityDescription.Name #>Service : BaseService<<#= EntityDescription.Name #>>, I<#= EntityDescription.Name #>Service
 {
-	public Task<<#= EntityDescription.PluralName #>> GetByIdAsync(Guid id)
-	{
-	}
+	public <#= EntityDescription.Name #>Service(UnitOfWorkManager unitOfWork, ILogger<<#= EntityDescription.Name #>Service> logger) : base(unitOfWork, logger)
+    {
+    }
 }
 
 

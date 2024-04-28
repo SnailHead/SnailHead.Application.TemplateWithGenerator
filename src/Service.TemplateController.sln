@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service.TemplateController", "Service.TemplateController\Service.TemplateController.csproj", "{5415DBA9-8BF4-4DB0-9AAA-78CC9E715682}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service.TemplateController.PL", "Service.TemplateController.PL\Service.TemplateController.PL.csproj", "{5415DBA9-8BF4-4DB0-9AAA-78CC9E715682}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service.TemplateController.DAL", "Service.TemplateController.DAL\Service.TemplateController.DAL.csproj", "{CEEA7EF4-8CEE-4EF1-ACB3-F03333914C04}"
 EndProject
