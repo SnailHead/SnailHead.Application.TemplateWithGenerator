@@ -1,5 +1,6 @@
 ﻿#nullable disable
 using Service.TemplateController.DAL.Application;
+using Service.TemplateController.DAL.Application.Filters;
 
 namespace Service.TemplateController.DAL.Entities;
 
@@ -23,7 +24,8 @@ public class Restaurant : IEntity
 
 
     public string SortKey { get; set; }
-
+    
+    [IncludeInFilterModel(ConditionsEnum.Equals)]
     public int? HotelId { get; set; }
 
     public bool HasDelivery { get; set; }
