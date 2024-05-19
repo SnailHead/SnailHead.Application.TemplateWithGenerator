@@ -12,7 +12,13 @@ public class DatabaseDefinition : ApplicationDefinition
         string connectionString = context.Configuration.GetConnectionString("DefaultConnection");
 
         context.ServiceCollection.AddDbContext<DefaultDbContext>(options =>
-            options.UseNpgsql(connectionString));
+        {
+            options.UseNpgsql(connectionString, b =>
+            {
+                b.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
+                b.MigrationsAssembly( typeof(DefaultDbContext).Assembly.ToString());
+            });
+        });
         return base.ConfigureServicesAsync(context);
     }
 }

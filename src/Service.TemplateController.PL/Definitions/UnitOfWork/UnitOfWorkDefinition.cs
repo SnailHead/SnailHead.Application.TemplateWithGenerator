@@ -17,6 +17,7 @@ namespace Service.TemplateController.PL.Definitions.UnitOfWork
                     configurator.DatabaseContext<DefaultDbContext>();
                 });
             });
+            await base.ConfigureServicesAsync(context);
         }
     }
 }

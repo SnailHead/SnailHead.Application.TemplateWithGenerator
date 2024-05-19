@@ -12,15 +12,14 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Service.TemplateController.BL\Service.TemplateController.BL.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="Scrutor" Version="4.2.2"/>
     <PackageReference Include="FluentValidation" Version="11.9.1" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.9.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.5" />
     <PackageReference Include="Microsoft.IdentityModel.Logging" Version="7.5.1" />
     <PackageReference Include="Pepegov.MicroserviceFramework.ApiResults" Version="1.0.4" />
     <PackageReference Include="Pepegov.MicroserviceFramework.AspNetCore" Version="2.2.2" />

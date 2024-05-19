@@ -30,7 +30,7 @@ namespace CodeGeneration.ServerCodeGenerator
 			MergeUtility = mergeUtility;
 			var dalProjectPath = Path.Combine(SolutionFolderPath, "Service.TemplateController.DAL", "Entities");
 			var entityFiles = Directory.GetFiles(dalProjectPath).Where(item => item.EndsWith(".cs")).Select(item => item.Split(Path.DirectorySeparatorChar).LastOrDefault().Replace(".cs", string.Empty)).ToArray();
-			Entities = entityFiles.Select(item => new EntityDescription(item, item, GeneratedFiles.Controller)).ToList();
+			Entities = entityFiles.Select(item => new EntityDescription(item, item, GeneratedFiles.All)).ToList();
 		}
 
         internal void Generate()

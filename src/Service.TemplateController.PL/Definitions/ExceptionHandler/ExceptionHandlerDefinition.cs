@@ -12,12 +12,12 @@ public class ExceptionHandlerDefinition : ApplicationDefinition
 
     public override async Task ConfigureServicesAsync(IDefinitionServiceContext context)
     {
-        context.ServiceCollection.AddMvc(options => options.Filters.Add<GlobalExceptionFilter>());
+        context.ServiceCollection.AddProblemDetails();
     }
 
     public override async Task ConfigureApplicationAsync(IDefinitionApplicationContext context)
     {
         var app = context.Parse<WebDefinitionApplicationContext>().WebApplication;
-        app.UseMiddleware<ExceptionHandlerMiddleware>();
+        app.UseExceptionHandler();
     }
 }

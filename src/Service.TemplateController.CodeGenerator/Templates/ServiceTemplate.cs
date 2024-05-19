@@ -67,7 +67,7 @@ namespace CodeGeneration.ServerCodeGenerator.Templates
             
             #line default
             #line hidden
-            this.Write("Service(UnitOfWorkManager unitOfWork, ILogger<");
+            this.Write("Service(IUnitOfWorkManager unitOfWork, ILogger<");
             
             #line 12 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ServiceTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.Name));

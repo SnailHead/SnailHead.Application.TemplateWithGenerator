@@ -9,7 +9,7 @@ namespace Service.TemplateController.BL.Services;
 
 public class <#= EntityDescription.Name #>Service : BaseService<<#= EntityDescription.Name #>>, I<#= EntityDescription.Name #>Service
 {
-	public <#= EntityDescription.Name #>Service(UnitOfWorkManager unitOfWork, ILogger<<#= EntityDescription.Name #>Service> logger) : base(unitOfWork, logger)
+	public <#= EntityDescription.Name #>Service(IUnitOfWorkManager unitOfWork, ILogger<<#= EntityDescription.Name #>Service> logger) : base(unitOfWork, logger)
     {
     }
 }
