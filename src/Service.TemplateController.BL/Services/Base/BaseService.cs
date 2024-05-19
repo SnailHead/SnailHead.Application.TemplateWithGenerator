@@ -36,7 +36,7 @@ public class BaseService<TEntity> : IBaseService<TEntity> where TEntity : class,
         }
         catch (Exception e)
         {
-            _logger.LogError(e, $"Произошла ошибка при удалении сущности {nameof(TEntity)} c id {id}: {e.Message}");
+            _logger.LogError(e, $"Произошла ошибка при удалении сущности {typeof(TEntity).Name} c id {id}: {e.Message}");
             throw;
         }
     }
@@ -63,7 +63,7 @@ public class BaseService<TEntity> : IBaseService<TEntity> where TEntity : class,
 
     }
 
-    public virtual async Task<TEntity?> Create(TEntity entity, CancellationToken cancellationToken = default)
+    public virtual async Task<TEntity?> CreateAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -83,7 +83,7 @@ public class BaseService<TEntity> : IBaseService<TEntity> where TEntity : class,
         }
     }
 
-    public virtual async Task<bool?> Create(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
+    public virtual async Task<bool?> CreateAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -98,7 +98,7 @@ public class BaseService<TEntity> : IBaseService<TEntity> where TEntity : class,
         }
     }
 
-    public virtual async Task<bool> Update(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
+    public virtual async Task<bool> UpdateAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -113,7 +113,7 @@ public class BaseService<TEntity> : IBaseService<TEntity> where TEntity : class,
         }
     }
 
-    public virtual async Task<TEntity> Update(TEntity entity, CancellationToken cancellationToken = default)
+    public virtual async Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -144,7 +144,7 @@ public class BaseService<TEntity> : IBaseService<TEntity> where TEntity : class,
         var dbSet = (DbSet<TEntity>)Repository.GetType().GetProperty("_dbSet", BindingFlags.NonPublic).GetValue(Repository, null);
         var query = CreateIQueryable(filterModel, dbSet);
         
-        return await Repository.GetPagedListAsync(predicate: BuildPredicate(query), include: include, orderBy: orderBy, pageIndex: filterModel.Page.Value, pageSize:filterModel.PageSize.Value,  cancellationToken: cancellationToken);
+        return await Repository.GetPagedListAsync(predicate: BuildPredicate(query), include: include, orderBy: orderBy, pageIndex: filterModel.Page, pageSize:filterModel.PageSize,  cancellationToken: cancellationToken);
     }
 
     public async Task<IList<TEntity>> GetAllByFilterAsync(BaseFilterModel filterModel, Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,

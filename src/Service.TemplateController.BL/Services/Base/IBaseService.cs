@@ -21,13 +21,13 @@ public interface IBaseService<TEntity> where TEntity : IEntity
     Task<IList<TEntity>> GetAllAsync(Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
         CancellationToken cancellationToken = default);
     
-    Task<TEntity?> Create(TEntity entity, CancellationToken cancellationToken = default);
+    Task<TEntity?> CreateAsync(TEntity entity, CancellationToken cancellationToken = default);
     
-    Task<bool?> Create(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default);
+    Task<bool?> CreateAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default);
 
-    Task<bool> Update(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default);
+    Task<bool> UpdateAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default);
     
-    Task<TEntity> Update(TEntity entity, CancellationToken cancellationToken = default);
+    Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default);
 
     Task<bool> ExistsAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default);
     

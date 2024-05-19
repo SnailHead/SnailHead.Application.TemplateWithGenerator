@@ -1,0 +1,26 @@
+﻿<#@ template visibility="internal" #>
+using Service.TemplateController.BL.Services.Base;
+
+namespace Service.TemplateController.PL.Models.Filters;
+
+public class <#= EntityDescription.Name #>FilterModel : BaseFilterModel
+{
+<#
+	foreach (var item in EntityDescription.FilterProperties)
+	{
+#>
+	public <#=item.Key#> <#=item.Value#> { get; set; } 
+<#
+	}
+#>
+}
+
+
+<#+
+	internal EntityDescription EntityDescription;
+	internal int MaxLineWidth;
+	internal FilterModelTemplate(EntityDescription entityDescription, int maxLineWidth) {
+		EntityDescription = entityDescription;
+		MaxLineWidth = maxLineWidth;
+	}
+#>

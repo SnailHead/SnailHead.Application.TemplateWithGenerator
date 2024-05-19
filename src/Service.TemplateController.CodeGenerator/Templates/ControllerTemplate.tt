@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Service.TemplateController.DAL.Entities;
 using System.Net;
 using Pepegov.UnitOfWork.Entityes;
+using Service.TemplateController.PL.Models.Filters;
 
 namespace Service.TemplateController.PL.Controllers;
 
@@ -21,11 +22,20 @@ public class <#= EntityDescription.PluralName #>Controller : ControllerBase
 	{
 		_<#= EntityDescription.PluralName.ToFirstLower() #>Service = <#= EntityDescription.PluralName.ToFirstLower() #>Service;
 	}
+	<#
+	if (NeedFilter)
+	{
+	#>[HttpPost]<#
+	}
+	else
+	{
+	#>[HttpGet]<#
+	}
+	#>
 
-	[HttpGet]
 	[ProducesResponseType(typeof(ApiResult<<#= EntityDescription.PluralName #>>), StatusCodes.Status200OK)]
 	[Route("get-paged-list")]
-	public async Task<IResult> GetPagedList(int page = 1, int pageSize = 20)
+	public async Task<IResult> GetPagedList(<#if (NeedFilter) {#>[FromBody] <#= EntityDescription.PluralName #>FilterModel filter,<#}#> [FromQuery] int page = 1, int pageSize = 20)
 	{
 		var pagedList = await _<#= EntityDescription.PluralName.ToFirstLower() #>Service.GetPagedListAsync(page, pageSize, cancellationToken: HttpContext.RequestAborted);
 		return Results.Extensions.Custom(new ApiResult<IPagedList<<#= EntityDescription.PluralName #>>>(pagedList, HttpStatusCode.OK));
@@ -52,7 +62,22 @@ public class <#= EntityDescription.PluralName #>Controller : ControllerBase
 	[Route("update")]
 	public async Task<IResult> Update(<#= EntityDescription.Name #> model)
 	{
-		var result = await _<#= EntityDescription.PluralName.ToFirstLower() #>Service.Update(model, cancellationToken: HttpContext.RequestAborted);
+		var result = await _<#= EntityDescription.PluralName.ToFirstLower() #>Service.UpdateAsync(model, cancellationToken: HttpContext.RequestAborted);
+		if (result is null)
+		{
+			return Results.Extensions.Custom(new ApiResult<<#= EntityDescription.Name #>>(HttpStatusCode.BadRequest, new MicroserviceInvalidOperationException("Update <#= EntityDescription.Name #> failed")));
+		}
+		return Results.Extensions.Custom(new ApiResult<<#= EntityDescription.Name #>>(model, HttpStatusCode.OK));
+	}
+
+	[HttpPost]
+	[ValidateAntiForgeryToken]
+	[ProducesResponseType(typeof(ApiResult<<#= EntityDescription.PluralName #>>), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(ApiResult), StatusCodes.Status400BadRequest)]
+	[Route("create")]
+	public async Task<IResult> Create(<#= EntityDescription.Name #> model)
+	{
+		var result = await _<#= EntityDescription.PluralName.ToFirstLower() #>Service.CreateAsync(model, cancellationToken: HttpContext.RequestAborted);
 		if (result is null)
 		{
 			return Results.Extensions.Custom(new ApiResult<<#= EntityDescription.Name #>>(HttpStatusCode.BadRequest, new MicroserviceInvalidOperationException("Update <#= EntityDescription.Name #> failed")));
@@ -78,8 +103,10 @@ public class <#= EntityDescription.PluralName #>Controller : ControllerBase
 <#+
 	internal EntityDescription EntityDescription;
 	internal int MaxLineWidth;
+	internal bool NeedFilter;
 	internal ControllerTemplate(EntityDescription entityDescription, int maxLineWidth) {
 		EntityDescription = entityDescription;
 		MaxLineWidth = maxLineWidth;
+		NeedFilter = entityDescription.FilterProperties.Count > 0;
 	}
 #>

@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Xml;
 using CodeGeneration.ServerCodeGenerator.Enums;
 using CodeGeneration.ServerCodeGenerator.MergeUtilities;
 using CodeGeneration.ServerCodeGenerator.Templates;
 using Microsoft.EntityFrameworkCore;
+using Service.TemplateController.DAL.Application.Filters;
 using Service.TemplateController.DAL.Database;
 
 namespace CodeGeneration.ServerCodeGenerator
@@ -30,8 +32,24 @@ namespace CodeGeneration.ServerCodeGenerator
 			MergeUtility = mergeUtility;
 			var dalProjectPath = Path.Combine(SolutionFolderPath, "Service.TemplateController.DAL", "Entities");
 			var entityFiles = Directory.GetFiles(dalProjectPath).Where(item => item.EndsWith(".cs")).Select(item => item.Split(Path.DirectorySeparatorChar).LastOrDefault().Replace(".cs", string.Empty)).ToArray();
-			Entities = entityFiles.Select(item => new EntityDescription(item, item, GeneratedFiles.All)).ToList();
+			var assembly = Assembly.GetAssembly(typeof(DefaultDbContext));
+			Entities = new List<EntityDescription>();
+			foreach (var item in entityFiles)
+			{
+				var filterProperty = GetFilterProperty(item, assembly);
+				Entities.Add(new EntityDescription(item, item, GeneratedFiles.All, filterProperty));
+			}
 		}
+
+		private Dictionary<string, string> GetFilterProperty(string entityFile, Assembly assembly)
+		{
+			PropertyInfo[] properties =
+				assembly.GetTypes().First(item => item.Name == entityFile).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
+			return properties.Where(item => item.GetCustomAttributes(typeof(IncludeInFilterModelAttribute)).Any()).Select(i => (i.PropertyType.Name=="Nullable`1" ? i.PropertyType.GenericTypeArguments[0].Name : i.PropertyType.Name , i.Name))
+				.ToDictionary(item => item.Item1, item => item.Item2);
+		}
+		
 
         internal void Generate()
 		{
@@ -44,6 +62,7 @@ namespace CodeGeneration.ServerCodeGenerator
 				
 				project = new MicrosoftBuildProject(Path.Combine(SolutionFolderPath, "Service.TemplateController.PL", "Service.TemplateController.PL.csproj"));
 				GenerateControllers(project);
+				GenerateFilters(project);
 				project.Save();
 			}
 		}
@@ -80,6 +99,20 @@ namespace CodeGeneration.ServerCodeGenerator
 					new ControllerTemplate(description.ExcludeNewProperties(), MaxLineWidth).TransformText(),
 					new ControllerTemplate(description, MaxLineWidth).TransformText(), 
 					$"Генерация контроллера {fileName}...");
+			}
+		}
+		private void GenerateFilters(MicrosoftBuildProject project)
+		{
+			foreach (var description in Entities)
+			{
+				if ((description.Files & GeneratedFiles.Controller) == GeneratedFiles.None || description.FilterProperties.Count == 0)
+					continue;
+				var fileName = description.PluralName + "FilterModel.cs";
+				var item = new MicrosoftBuildProject.Item(Path.Combine("Models", "Filters", fileName), "Compile");
+				CreateFileInProject(project, item, 
+					new FilterModelTemplate(description.ExcludeNewProperties(), MaxLineWidth).TransformText(),
+					new FilterModelTemplate(description, MaxLineWidth).TransformText(), 
+					$"Генерация фильтра {fileName}...");
 			}
 		}
 

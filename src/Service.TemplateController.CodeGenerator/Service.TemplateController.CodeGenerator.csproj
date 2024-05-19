@@ -23,6 +23,11 @@
     <Compile Include="PropertyDescription.cs" />
     <Compile Include="StringExtensions.cs" />
     <Compile Include="Templates\ControllerTemplate.cs" />
+    <Compile Include="Templates\FilterModelTemplate.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>FilterModelTemplate.tt</DependentUpon>
+    </Compile>
     <Compile Include="Templates\IServiceTemplate.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -51,6 +56,10 @@
     <None Update="Templates\IServiceTemplate.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>IServiceTemplate.cs</LastGenOutput>
+    </None>
+    <None Update="Templates\FilterModelTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>FilterModelTemplate.cs</LastGenOutput>
     </None>
   </ItemGroup>
 
@@ -104,9 +113,5 @@
   <ItemGroup>
     <ProjectReference Include="..\Service.TemplateController.DAL\Service.TemplateController.DAL.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Service.TemplateController.DAL\Service.TemplateController.DAL.csproj" />
-  </ItemGroup>
-
+  
 </Project>
