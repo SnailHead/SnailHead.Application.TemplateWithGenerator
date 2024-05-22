@@ -16,13 +16,6 @@ public class CommonDefinition : ApplicationDefinition
         context.ServiceCollection.AddMemoryCache();
         context.ServiceCollection.AddResponseCaching();
         context.ServiceCollection.AddControllers();
-        context.ServiceCollection.Scan(scan =>
-        {
-            scan.FromAssemblyOf<RestaurantService>()
-                .AddClasses(classes => classes.Where(c => !c.IsAbstract && c.GetInterfaces().Any()))
-                .AsImplementedInterfaces()
-                .WithScopedLifetime();
-        });
     }
 
     public override async Task ConfigureApplicationAsync(IDefinitionApplicationContext context)

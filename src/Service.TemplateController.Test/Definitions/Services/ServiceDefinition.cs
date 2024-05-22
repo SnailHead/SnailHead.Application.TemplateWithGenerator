@@ -1,10 +1,11 @@
+using Microsoft.Extensions.DependencyInjection;
 using Pepegov.MicroserviceFramework.Definition;
 using Pepegov.MicroserviceFramework.Definition.Context;
 using Service.TemplateController.BL.Services;
 
-namespace Service.TemplateController.PL.Definitions.Services;
+namespace Service.TemplateController.Test.Definitions.Services;
 
-public class ServicesDefinition : ApplicationDefinition
+public class ServiceDefinition : ApplicationDefinition
 {
     public override async Task ConfigureServicesAsync(IDefinitionServiceContext context)
     {
