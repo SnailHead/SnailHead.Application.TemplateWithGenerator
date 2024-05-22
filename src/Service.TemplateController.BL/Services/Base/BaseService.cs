@@ -7,6 +7,7 @@ using Pepegov.UnitOfWork;
 using Pepegov.UnitOfWork.Entityes;
 using Pepegov.UnitOfWork.EntityFramework;
 using Pepegov.UnitOfWork.EntityFramework.Repository;
+using Pepegov.UnitOfWork.Extensions;
 using Service.TemplateController.BL.Services.Base.Helpers;
 using Service.TemplateController.DAL.Application;
 using Service.TemplateController.DAL.Application.Filters;
@@ -141,19 +142,13 @@ public class BaseService<TEntity> : IBaseService<TEntity> where TEntity : class,
     public async Task<IPagedList<TEntity>> GetPagedListByFilterAsync(BaseFilterModel filterModel, Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
         CancellationToken cancellationToken = default)
     {
-        var dbSet = (DbSet<TEntity>)Repository.GetType().GetProperty("_dbSet", BindingFlags.NonPublic).GetValue(Repository, null);
-        var query = CreateIQueryable(filterModel, dbSet);
-        
-        return await Repository.GetPagedListAsync(predicate: BuildPredicate(query), include: include, orderBy: orderBy, pageIndex: filterModel.Page, pageSize:filterModel.PageSize,  cancellationToken: cancellationToken);
+        return await Repository.QueryAsync(func: item => CreateIQueryable(filterModel, item).ToPagedListAsync(pageIndex: filterModel.Page, pageSize: filterModel.PageSize, cancellationToken: cancellationToken), include: include, cancellationToken: cancellationToken);
     }
 
     public async Task<IList<TEntity>> GetAllByFilterAsync(BaseFilterModel filterModel, Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
         CancellationToken cancellationToken = default)
     {
-        var dbSet = (DbSet<TEntity>)Repository.GetType().GetProperty("_dbSet", BindingFlags.NonPublic).GetValue(Repository, null);
-        var query = CreateIQueryable(filterModel, dbSet);
-        
-        return await Repository.GetAllAsync(predicate: BuildPredicate(query), include: include, orderBy: orderBy, cancellationToken: cancellationToken);
+        return await Repository.QueryAsync(func: item => CreateIQueryable(filterModel, item).ToListAsync(cancellationToken), include: include, cancellationToken: cancellationToken);
     }
 
     public virtual async Task<IList<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> predicate, Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null, int? count = null,
@@ -168,6 +163,10 @@ public class BaseService<TEntity> : IBaseService<TEntity> where TEntity : class,
         var param = Expression.Parameter(typeof(TEntity), null);
         var member = Expression.Property(param, propertyName);
         var constant = Expression.Constant(value);
+        if (Nullable.GetUnderlyingType(member.Type) != null)
+        {
+            member = Expression.Property(member, "Value");
+        }
         var body = condition switch
         {
             ConditionsEnum.Less => Expression.LessThan(member, constant),
@@ -179,43 +178,13 @@ public class BaseService<TEntity> : IBaseService<TEntity> where TEntity : class,
         };
         return Expression.Lambda<Func<TEntity, bool>>(body, param);
     }
-    private Expression<Func<TEntity, bool>> BuildPredicate(IQueryable<TEntity> queryable)
+    private IQueryable<TEntity> CreateIQueryable(BaseFilterModel filterModel, IQueryable<TEntity> query)
     {
-        // Get the parameter expression for the entity
-        ParameterExpression parameter = Expression.Parameter(typeof(TEntity));
-
-        // Create an expression body for the predicate
-        Expression body = Expression.Constant(true); // Default predicate if no filters applied
-
-        // Check if queryable has any expression tree (i.e., any Where clauses applied)
-        if (queryable.Expression.NodeType == ExpressionType.Call)
-        {
-            // Get the MethodCallExpression
-            MethodCallExpression whereCallExpression = (MethodCallExpression)queryable.Expression;
-
-            // Check if the method called is Where
-            if (whereCallExpression.Method.Name == "Where")
-            {
-                // Extract the predicate from the Where clause
-                LambdaExpression lambda = (LambdaExpression)((UnaryExpression)whereCallExpression.Arguments[1]).Operand;
-
-                // Replace the parameter in the lambda expression with the parameter for TEntity
-                body = new ReplaceVisitor(lambda.Parameters[0], parameter).Visit(lambda.Body);
-            }
-        }
-
-        // Build the final predicate expression
-        Expression<Func<TEntity, bool>> predicate = Expression.Lambda<Func<TEntity, bool>>(body, parameter);
-        return predicate;
-    }
-
-    private IQueryable<TEntity> CreateIQueryable(BaseFilterModel filterModel, DbSet<TEntity> dbSet)
-    {
-        var query = dbSet.AsQueryable();
-        var entityPropertiesNames = typeof(TEntity).GetProperties().Select(x => x.Name).ToList();
+        var entityProperties = typeof(TEntity).GetProperties().ToList();
+        var entityPropertiesNames = entityProperties.Select(x => x.Name).ToList();
 
         var exceptColumns = filterModel.GetType().GetProperties().Except(typeof(BaseFilterModel).GetProperties())
-            .Where(columnName => !entityPropertiesNames.Contains(columnName.Name))
+            .Where(columnName => entityPropertiesNames.Contains(columnName.Name))
             .ToList();
         
         if (exceptColumns.Count < 1)
@@ -231,9 +200,9 @@ public class BaseService<TEntity> : IBaseService<TEntity> where TEntity : class,
             {
                 continue;
             }
-            
-            if (!(p.GetCustomAttribute(typeof(IncludeInFilterModelAttribute)) is IncludeInFilterModelAttribute
-                    filterModelAttribute))
+
+            var filterModelAttribute = entityProperties.FirstOrDefault(item => item.Name == p.Name)?.GetCustomAttribute<IncludeInFilterModelAttribute>();
+            if (filterModelAttribute is null)
             {
                 continue;
             }
@@ -248,13 +217,22 @@ public class BaseService<TEntity> : IBaseService<TEntity> where TEntity : class,
             }
             else
             {
-                var value = p.GetValue(filterModel);
-                var condition = CreateConditionalExpression(p.Name, value, filterModelAttribute.Condition);
+                CheckConditionAndType(filterModelAttribute.Condition, p.PropertyType);
+                var condition = CreateConditionalExpression(p.Name, propertyValue, filterModelAttribute.Condition);
                 query = query.Where(condition);
             }
         }
 
         return query;
+    }
+
+    private void CheckConditionAndType(ConditionsEnum condition, Type type)
+    {
+        var typeCode = (int)Type.GetTypeCode(Nullable.GetUnderlyingType(type) ?? type);
+        if ((int)condition < 4 && (typeCode < 4 || typeCode > 16))
+        {
+            throw new ArgumentException();
+        }
     }
 }
 
