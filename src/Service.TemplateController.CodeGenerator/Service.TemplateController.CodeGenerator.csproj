@@ -23,6 +23,11 @@
     <Compile Include="PropertyDescription.cs" />
     <Compile Include="StringExtensions.cs" />
     <Compile Include="Templates\ControllerTemplate.cs" />
+    <Compile Include="Templates\EndpointTemplate.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>EndpointTemplate.tt</DependentUpon>
+    </Compile>
     <Compile Include="Templates\FilterModelTemplate.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -60,6 +65,10 @@
     <None Update="Templates\FilterModelTemplate.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>FilterModelTemplate.cs</LastGenOutput>
+    </None>
+    <None Update="Templates\EndpointTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>EndpointTemplate.cs</LastGenOutput>
     </None>
   </ItemGroup>
 

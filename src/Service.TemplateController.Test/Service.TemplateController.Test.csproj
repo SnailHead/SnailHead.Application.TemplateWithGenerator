@@ -29,6 +29,10 @@
       <ProjectReference Include="..\Service.TemplateController.DAL\Service.TemplateController.DAL.csproj" />
       <ProjectReference Include="..\Service.TemplateController.PL\Service.TemplateController.PL.csproj" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Tests\" />
+    </ItemGroup>
     
 
 </Project>

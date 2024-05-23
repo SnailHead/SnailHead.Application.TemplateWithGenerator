@@ -1,0 +1,103 @@
+﻿<#@ template visibility="internal" #>
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Pepegov.MicroserviceFramework.ApiResults;
+using Pepegov.MicroserviceFramework.AspNetCore.WebApi;
+using Pepegov.MicroserviceFramework.Data.Exceptions;
+using Service.TemplateController.BL.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Service.TemplateController.DAL.Entities;
+using System.Net;
+using Pepegov.UnitOfWork.Entityes;
+using Service.TemplateController.PL.Models.Filters;
+
+namespace Service.TemplateController.PL.EndPoints.<#= EntityDescription.PluralName #>;
+
+public class <#= EntityDescription.PluralName #>EndPoints : ApplicationDefinition
+{
+	public override async Task ConfigureApplicationAsync(IDefinitionApplicationContext context)
+    {
+		var app = context.Parse<WebDefinitionApplicationContext>().WebApplication;
+
+        app.MapPost("~/api/<#= EntityDescription.PluralName.PascalToKebabCase() #>/create", Create)
+            .WithOpenApi()
+            .WithSummary("Create <#= EntityDescription.PluralName.PascalWithSpace() #>")
+            .WithTags("<#= EntityDescription.PluralName #>");
+
+		app.MapPost("~/api/<#= EntityDescription.PluralName.PascalToKebabCase() #>/update", Update)
+            .WithOpenApi()
+            .WithSummary("Update <#= EntityDescription.PluralName.PascalWithSpace() #>")
+            .WithTags("<#= EntityDescription.PluralName #>");
+
+		app.MapGet("~/api/<#= EntityDescription.PluralName.PascalToKebabCase() #>/get-by-id", GetById)
+            .WithOpenApi()
+            .WithSummary("Get <#= EntityDescription.PluralName.PascalWithSpace() #> by id")
+            .WithTags("<#= EntityDescription.PluralName #>");
+
+		app.MapDelete("~/api/<#= EntityDescription.PluralName.PascalToKebabCase() #>/delete", Delete)
+            .WithOpenApi()
+            .WithSummary("Delete <#= EntityDescription.PluralName.PascalWithSpace() #>")
+            .WithTags("<#= EntityDescription.PluralName #>");
+
+		<#if (NeedFilter)
+		{#>app.MapPost("~/api/<#= EntityDescription.PluralName.PascalToKebabCase() #>/get-paged-list", GetPagedList)
+	        .WithOpenApi()
+	        .WithSummary("Get paged list by filter <#= EntityDescription.PluralName.PascalWithSpace() #>")
+	        .WithTags("<#= EntityDescription.PluralName #>");
+		<#} else {#>app.MapGet("~/api/<#= EntityDescription.PluralName.PascalToKebabCase() #>/get-paged-list", GetPagedList)
+            .WithOpenApi()
+            .WithSummary("Get <#= EntityDescription.PluralName.PascalWithSpace() #> paged list")
+            .WithTags("<#= EntityDescription.PluralName #>");
+		<#}#>
+	}
+
+	[ProducesResponseType(200, Type = typeof(ApiResult<<#=EntityDescription.PluralName#>>))]
+    [ProducesResponseType(401)]
+    [ProducesResponseType(403)]
+    [ProducesResponseType(404, Type = typeof(ApiResult))]
+    [FeatureGroupName("<#= EntityDescription.PluralName #>")]
+    private async Task<IResult> Create(HttpContext context,
+        [FromServices] I<#= ServiceName #> <#= ServiceName.ToFirstLower() #>,
+        [FromBody] <#= EntityDescription.PluralName #>,
+        CancellationToken cancellationToken)
+    {
+        var result = await <#= ServiceName.ToFirstLower() #>.CreateAsync(model, cancellationToken: cancellationToken);
+		if (result is null)
+		{
+			return Results.Extensions.Custom(new ApiResult<<#= EntityDescription.PluralName #>>(HttpStatusCode.BadRequest, new MicroserviceInvalidOperationException("Update <#= EntityDescription.Name #> failed")));
+		}
+		return Results.Extensions.Custom(new ApiResult<<#= EntityDescription.Name #>>(model, HttpStatusCode.OK));
+    }
+
+	[ProducesResponseType(200, Type = typeof(ApiResult<<#=EntityDescription.PluralName#>>))]
+    [ProducesResponseType(401)]
+    [ProducesResponseType(403)]
+    [ProducesResponseType(404, Type = typeof(ApiResult))]
+    [FeatureGroupName("<#= EntityDescription.PluralName #>")]
+    private async Task<IResult> Update(HttpContext context,
+        [FromServices] I<#= ServiceName #> <#= ServiceName.ToFirstLower() #>,
+        [FromBody] <#= EntityDescription.PluralName #>,
+        CancellationToken cancellationToken)
+    {
+        var result = await <#= ServiceName.ToFirstLower() #>.UpdateAsync(model, cancellationToken: cancellationToken);
+		if (result is null)
+		{
+			return Results.Extensions.Custom(new ApiResult<<#= EntityDescription.PluralName #>>(HttpStatusCode.BadRequest, new MicroserviceInvalidOperationException("Update <#= EntityDescription.Name #> failed")));
+		}
+		return Results.Extensions.Custom(new ApiResult<<#= EntityDescription.Name #>>(model, HttpStatusCode.OK));
+    }
+
+}
+
+<#+
+	internal EntityDescription EntityDescription;
+	internal int MaxLineWidth;
+	internal bool NeedFilter;
+	internal string ServiceName;
+	internal EndpointTemplate(EntityDescription entityDescription, int maxLineWidth) {
+		EntityDescription = entityDescription;
+		MaxLineWidth = maxLineWidth;
+		NeedFilter = entityDescription.FilterProperties.Count > 0;
+		ServiceName = EntityDescription.PluralName + "Service";
+	}
+#>

@@ -16,11 +16,11 @@ namespace Service.TemplateController.PL.Controllers;
 [Route("/<#= EntityDescription.PluralName.PascalToKebabCase() #>")]
 public class <#= EntityDescription.PluralName #>Controller : ControllerBase
 {
-	private readonly I<#= EntityDescription.PluralName #>Service _<#= EntityDescription.PluralName.ToFirstLower() #>Service;
+	private readonly I<#= ServiceName #> _<#= ServiceName.ToFirstLower() #>;
 
-	public <#= EntityDescription.PluralName #>Controller(I<#= EntityDescription.PluralName #>Service <#= EntityDescription.PluralName.ToFirstLower() #>Service)
+	public <#= EntityDescription.PluralName #>Controller(I<#= ServiceName #> <#= ServiceName.ToFirstLower() #>)
 	{
-		_<#= EntityDescription.PluralName.ToFirstLower() #>Service = <#= EntityDescription.PluralName.ToFirstLower() #>Service;
+		_<#= ServiceName.ToFirstLower() #> = <#= ServiceName.ToFirstLower() #>;
 	}
 	<#
 	if (NeedFilter)
@@ -37,7 +37,7 @@ public class <#= EntityDescription.PluralName #>Controller : ControllerBase
 	[Route("get-paged-list")]
 	public async Task<IResult> GetPagedList(<#if (NeedFilter) {#>[FromBody] <#= EntityDescription.PluralName #>FilterModel filter,<#}#> [FromQuery] int page = 1, int pageSize = 20)
 	{
-		var pagedList = await _<#= EntityDescription.PluralName.ToFirstLower() #>Service.GetPagedListAsync(page, pageSize, cancellationToken: HttpContext.RequestAborted);
+		var pagedList = await _<#= ServiceName.ToFirstLower() #>.GetPagedListAsync(page, pageSize, cancellationToken: HttpContext.RequestAborted);
 		return Results.Extensions.Custom(new ApiResult<IPagedList<<#= EntityDescription.PluralName #>>>(pagedList, HttpStatusCode.OK));
 	}
 
@@ -47,10 +47,10 @@ public class <#= EntityDescription.PluralName #>Controller : ControllerBase
 	[Route("get-by-id")]
 	public async Task<IResult> GetById(Guid id)
 	{
-		var entity = await _<#= EntityDescription.PluralName.ToFirstLower() #>Service.GetByIdAsync(id, cancellationToken: HttpContext.RequestAborted);
+		var entity = await _<#= ServiceName.ToFirstLower() #>.GetByIdAsync(id, cancellationToken: HttpContext.RequestAborted);
 		if (entity is null)
 		{
-			return Results.Extensions.Custom(new ApiResult<<#= EntityDescription.PluralName #>?>(null, HttpStatusCode.NotFound, new MicroserviceNotFoundException($"<#= EntityDescription.PluralName #> with id {id} not found")));
+			return Results.Extensions.Custom(new ApiResult(HttpStatusCode.NotFound, new MicroserviceNotFoundException($"<#= EntityDescription.PluralName #> with id {id} not found")));
 		}
 		return Results.Extensions.Custom(new ApiResult<<#= EntityDescription.PluralName #>>(entity, HttpStatusCode.OK));
 	}
@@ -62,7 +62,7 @@ public class <#= EntityDescription.PluralName #>Controller : ControllerBase
 	[Route("update")]
 	public async Task<IResult> Update(<#= EntityDescription.Name #> model)
 	{
-		var result = await _<#= EntityDescription.PluralName.ToFirstLower() #>Service.UpdateAsync(model, cancellationToken: HttpContext.RequestAborted);
+		var result = await _<#= ServiceName.ToFirstLower() #>.UpdateAsync(model, cancellationToken: HttpContext.RequestAborted);
 		if (result is null)
 		{
 			return Results.Extensions.Custom(new ApiResult<<#= EntityDescription.Name #>>(HttpStatusCode.BadRequest, new MicroserviceInvalidOperationException("Update <#= EntityDescription.Name #> failed")));
@@ -77,10 +77,10 @@ public class <#= EntityDescription.PluralName #>Controller : ControllerBase
 	[Route("create")]
 	public async Task<IResult> Create(<#= EntityDescription.Name #> model)
 	{
-		var result = await _<#= EntityDescription.PluralName.ToFirstLower() #>Service.CreateAsync(model, cancellationToken: HttpContext.RequestAborted);
+		var result = await _<#= ServiceName.ToFirstLower() #>.CreateAsync(model, cancellationToken: HttpContext.RequestAborted);
 		if (result is null)
 		{
-			return Results.Extensions.Custom(new ApiResult<<#= EntityDescription.Name #>>(HttpStatusCode.BadRequest, new MicroserviceInvalidOperationException("Update <#= EntityDescription.Name #> failed")));
+			return Results.Extensions.Custom(new ApiResult<<#= EntityDescription.PluralName #>>(HttpStatusCode.BadRequest, new MicroserviceInvalidOperationException("Update <#= EntityDescription.Name #> failed")));
 		}
 		return Results.Extensions.Custom(new ApiResult<<#= EntityDescription.Name #>>(model, HttpStatusCode.OK));
 	}
@@ -91,10 +91,10 @@ public class <#= EntityDescription.PluralName #>Controller : ControllerBase
 	[ProducesResponseType(typeof(ApiResult), StatusCodes.Status400BadRequest)]
 	public async Task<IResult> Delete(Guid id)
 	{
-		var result = await _<#= EntityDescription.PluralName.ToFirstLower() #>Service.DeleteAsync(id, cancellationToken: HttpContext.RequestAborted);
+		var result = await _<#= ServiceName.ToFirstLower() #>.DeleteAsync(id, cancellationToken: HttpContext.RequestAborted);
 		if (!result)
 		{
-			return Results.Extensions.Custom(new ApiResult(HttpStatusCode.BadRequest, new MicroserviceInvalidOperationException("Delete <#= EntityDescription.Name #> failed")));
+			return Results.Extensions.Custom(new ApiResult(HttpStatusCode.BadRequest, new MicroserviceInvalidOperationException("Delete <#= EntityDescription.PluralName #> failed")));
 		}
 		return Results.Extensions.Custom(new ApiResult(HttpStatusCode.OK));
 	}
@@ -104,9 +104,11 @@ public class <#= EntityDescription.PluralName #>Controller : ControllerBase
 	internal EntityDescription EntityDescription;
 	internal int MaxLineWidth;
 	internal bool NeedFilter;
+	internal string ServiceName;
 	internal ControllerTemplate(EntityDescription entityDescription, int maxLineWidth) {
 		EntityDescription = entityDescription;
 		MaxLineWidth = maxLineWidth;
 		NeedFilter = entityDescription.FilterProperties.Count > 0;
+		ServiceName = EntityDescription.PluralName + "Service";
 	}
 #>
