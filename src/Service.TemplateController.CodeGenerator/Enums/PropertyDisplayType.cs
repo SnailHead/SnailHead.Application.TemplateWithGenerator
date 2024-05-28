@@ -1,14 +1,13 @@
-﻿namespace CodeGeneration.ServerCodeGenerator.Enums
+﻿namespace CodeGeneration.ServerCodeGenerator.Enums;
+
+internal enum PropertyDisplayType
 {
-	internal enum PropertyDisplayType
-	{
-		Hidden,
-		Bool,
-		NullableBool,
-		Enum,
-		NullableEnum,
-		BitMask,
-		Date,
-		Default
-	}
+	Hidden,
+	Bool,
+	NullableBool,
+	Enum,
+	NullableEnum,
+	BitMask,
+	Date,
+	Default
 }

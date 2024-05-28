@@ -1,0 +1,19 @@
+{
+  "BaseConfiguration": {
+    "UsageTemplate": "Controller",
+    "NeedUnitTest": true,
+    "AuthenticationScheme": "Bearer"
+  },
+  "EntityConfigurations": [
+    {
+      "EntityName": "Restaurant",
+      "AuthenticationScheme": null,
+      "PropertiesForFilter": null
+    },
+    {
+      "EntityName": "RestaurantImage",
+      "NeedApi" : false,
+      "NeedUnitTest": false
+    }
+  ]
+}

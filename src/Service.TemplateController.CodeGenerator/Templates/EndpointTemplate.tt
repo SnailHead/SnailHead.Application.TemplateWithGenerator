@@ -58,7 +58,7 @@ public class <#= EntityDescription.PluralName #>EndPoints : ApplicationDefinitio
     [FeatureGroupName("<#= EntityDescription.PluralName #>")]
     private async Task<IResult> Create(HttpContext context,
         [FromServices] I<#= ServiceName #> <#= ServiceName.ToFirstLower() #>,
-        [FromBody] <#= EntityDescription.PluralName #>,
+        [FromBody] <#= EntityDescription.PluralName #> model,
         CancellationToken cancellationToken)
     {
         var result = await <#= ServiceName.ToFirstLower() #>.CreateAsync(model, cancellationToken: cancellationToken);
@@ -76,11 +76,47 @@ public class <#= EntityDescription.PluralName #>EndPoints : ApplicationDefinitio
     [FeatureGroupName("<#= EntityDescription.PluralName #>")]
     private async Task<IResult> Update(HttpContext context,
         [FromServices] I<#= ServiceName #> <#= ServiceName.ToFirstLower() #>,
-        [FromBody] <#= EntityDescription.PluralName #>,
+        [FromBody] <#= EntityDescription.PluralName #> model,
         CancellationToken cancellationToken)
     {
         var result = await <#= ServiceName.ToFirstLower() #>.UpdateAsync(model, cancellationToken: cancellationToken);
 		if (result is null)
+		{
+			return Results.Extensions.Custom(new ApiResult<<#= EntityDescription.PluralName #>>(HttpStatusCode.BadRequest, new MicroserviceInvalidOperationException("Update <#= EntityDescription.Name #> failed")));
+		}
+		return Results.Extensions.Custom(new ApiResult<<#= EntityDescription.Name #>>(model, HttpStatusCode.OK));
+    }
+
+	[ProducesResponseType(200, Type = typeof(ApiResult<<#=EntityDescription.PluralName#>>))]
+    [ProducesResponseType(401)]
+    [ProducesResponseType(403)]
+    [ProducesResponseType(404, Type = typeof(ApiResult))]
+    [FeatureGroupName("<#= EntityDescription.PluralName #>")]
+    private async Task<IResult> GetById(HttpContext context,
+        [FromServices] I<#= ServiceName #> <#= ServiceName.ToFirstLower() #>,
+        [FromQuery] Guid id,
+        CancellationToken cancellationToken)
+    {
+        var result = await <#= ServiceName.ToFirstLower() #>.GetByIdAsync(id, cancellationToken: cancellationToken);
+		if (result is null)
+		{
+			return Results.Extensions.Custom(new ApiResult<<#= EntityDescription.PluralName #>>(HttpStatusCode.BadRequest, new MicroserviceInvalidOperationException("Update <#= EntityDescription.Name #> failed")));
+		}
+		return Results.Extensions.Custom(new ApiResult<<#= EntityDescription.Name #>>(model, HttpStatusCode.OK));
+    }
+
+	[ProducesResponseType(200, Type = typeof(ApiResult<<#=EntityDescription.PluralName#>>))]
+    [ProducesResponseType(401)]
+    [ProducesResponseType(403)]
+    [ProducesResponseType(404, Type = typeof(ApiResult))]
+    [FeatureGroupName("<#= EntityDescription.PluralName #>")]
+    private async Task<IResult> Delete(HttpContext context,
+        [FromServices] I<#= ServiceName #> <#= ServiceName.ToFirstLower() #>,
+        [FromQuery] Guid id,
+        CancellationToken cancellationToken)
+    {
+        var result = await <#= ServiceName.ToFirstLower() #>.DeleteAsync(id, cancellationToken: cancellationToken);
+		if (!result)
 		{
 			return Results.Extensions.Custom(new ApiResult<<#= EntityDescription.PluralName #>>(HttpStatusCode.BadRequest, new MicroserviceInvalidOperationException("Update <#= EntityDescription.Name #> failed")));
 		}

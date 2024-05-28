@@ -1,9 +1,8 @@
-﻿namespace CodeGeneration.ServerCodeGenerator.Enums
+﻿namespace CodeGeneration.ServerCodeGenerator.Enums;
+
+internal enum ExistingFilesProcessMode
 {
-	internal enum ExistingFilesProcessMode
-	{
-		Skip,
-		Overwrite,
-		Merge
-	}
+	Skip,
+	Overwrite,
+	Merge
 }

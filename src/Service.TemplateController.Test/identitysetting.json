@@ -1,0 +1,116 @@
+{
+  "ClientsIdentity": [
+    {
+      "Name" : "MicroserviceCredentials",
+      "Id" : "MicroserviceCredentials-ID",
+      "Secret": "MicroserviceCredentials-SECRET",
+      "GrandTypes": [
+        "client_credentials",
+        "refresh_token"
+      ],
+      "Scopes": [
+        "profile",
+        "offline_access",
+        "openid"
+      ]
+    },
+    {
+      "Name" : "MicroserviceDevice",
+      "Id" : "MicroserviceDevice-ID",
+      "Secret": "MicroserviceDevice-SECRET",
+      "GrandTypes": [
+        "urn:ietf:params:oauth:grant-type:device_code",
+        "refresh_token"
+      ],
+      "ConsentType" : "implicit",
+      "Scopes": [
+        "profile",
+        "offline_access",
+        "openid",
+        "email",
+        "api"
+      ]
+    },
+    {
+      "Name" : "MicroservicePassword",
+      "Id" : "MicroservicePassword-ID",
+      "Secret": "MicroservicePassword-SECRET",
+      "GrandTypes": [
+        "refresh_token",
+        "password"
+      ],
+      "Scopes": [
+        "profile",
+        "offline_access",
+        "openid",
+        "api"
+      ]
+    },
+    {
+      "Name" : "MicroserviceAuthorizationCode",
+      "Id" : "MicroserviceAuthorizationCode-ID",
+      "Secret": "MicroserviceAuthorizationCode-SECRET",
+      "ConsentType" : "implicit",
+      "GrandTypes": [
+        "refresh_token",
+        "authorization_code"
+      ],
+      "Scopes": [
+        "profile",
+        "offline_access",
+        "openid"
+      ]
+    }
+  ],
+
+  "CurrentIdentityClient": {
+    "Name" : "Identity",
+    "Id" : "Identity-ID",
+    "Secret": "Identity-SECRET",
+    "ConsentType" : "implicit",
+    "GrandTypes": [
+      "refresh_token",
+      "authorization_code",
+      "client_credentials",
+      "password"
+    ],
+    "Scopes": [
+      "profile",
+      "offline_access",
+      "openid"
+    ]
+  },
+
+  "Scopes": [
+    {
+      "Name": "openid",
+      "Description": "standart openid scope"
+    },
+    {
+      "Name": "offline_access",
+      "Description": "standart offline_access scope"
+    },
+    {
+      "Name": "profile",
+      "Description": "standart profile scope"
+    },
+    {
+      "Name": "email",
+      "Description": "standart profile scope"
+    },
+    {
+      "Name": "phone",
+      "Description": "standart profile scope"
+    },
+    {
+      "Name": "roles",
+      "Description": "standart profile scope"
+    },
+    {
+      "Name": "api",
+      "Description": "custom api scope"
+    }
+  ],
+
+  "Permissions": [  ]
+}

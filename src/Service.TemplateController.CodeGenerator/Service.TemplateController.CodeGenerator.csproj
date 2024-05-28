@@ -11,14 +11,18 @@
   <ItemGroup>
     <Compile Include="CodeGenerator.cs" />
     <Compile Include="EntityDescription.cs" />
+    <Compile Include="Enums\AuthenticationSchemeEnum.cs" />
     <Compile Include="Enums\ExistingFilesProcessMode.cs" />
-    <Compile Include="Enums\GeneratedFiles.cs" />
     <Compile Include="Enums\PropertyDisplayType.cs" />
+    <Compile Include="Enums\UsageTemplateEnum.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="MergeUtilities\KDiff3MergeUtility.cs" />
     <Compile Include="MergeUtilities\MergeUtility.cs" />
     <Compile Include="MergeUtilities\TortoiseMergeUtility.cs" />
     <Compile Include="MicrosoftBuildProject.cs" />
+    <Compile Include="Options\BaseConfiguration.cs" />
+    <Compile Include="Options\EntityConfiguration.cs" />
+    <Compile Include="Options\GeneratorConfigurations.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="PropertyDescription.cs" />
     <Compile Include="StringExtensions.cs" />
@@ -38,10 +42,20 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>IServiceTemplate.tt</DependentUpon>
     </Compile>
+    <Compile Include="Templates\MockDataTemplate.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>MockDataTemplate.tt</DependentUpon>
+    </Compile>
     <Compile Include="Templates\ServiceTemplate.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ServiceTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Templates\UnitTestTemplate.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>UnitTestTemplate.tt</DependentUpon>
     </Compile>
   </ItemGroup>
 
@@ -69,6 +83,17 @@
     <None Update="Templates\EndpointTemplate.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>EndpointTemplate.cs</LastGenOutput>
+    </None>
+    <None Update="config.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Templates\UnitTestTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>UnitTestTemplate.cs</LastGenOutput>
+    </None>
+    <None Update="Templates\MockDataTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>MockDataTemplate.cs</LastGenOutput>
     </None>
   </ItemGroup>
 

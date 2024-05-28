@@ -1,0 +1,29 @@
+﻿<#@ template visibility="internal" #>
+using Bogus;
+using Service.TemplateController.DAL.Entities;
+
+namespace Service.TemplateController.Test.MockData;
+
+public static class Mock<#= EntityDescription.Name #>
+{
+    public static <#= EntityDescription.Name #> Create()
+    {
+        Randomizer.Seed = new Random(368335);   
+        var faker = new Faker<<#= EntityDescription.Name #>>("ru");
+        //todo write rules for faker
+        return faker.Generate();
+    }
+}
+
+<#+
+	internal EntityDescription EntityDescription;
+	internal int MaxLineWidth;
+	internal bool NeedFilter;
+	internal string ServiceName;
+	internal MockDataTemplate(EntityDescription entityDescription, int maxLineWidth) {
+		EntityDescription = entityDescription;
+		MaxLineWidth = maxLineWidth;
+		NeedFilter = entityDescription.FilterProperties.Count > 0;
+		ServiceName = EntityDescription.PluralName + "Service";
+	}
+#>

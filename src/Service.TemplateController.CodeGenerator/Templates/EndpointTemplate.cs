@@ -222,7 +222,7 @@ if (NeedFilter)
             
             #line default
             #line hidden
-            this.Write(",\n        CancellationToken cancellationToken)\n    {\n        var result = await ");
+            this.Write(" model,\n        CancellationToken cancellationToken)\n    {\n        var result = await ");
             
             #line 64 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/EndpointTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(ServiceName.ToFirstLower()));
@@ -285,7 +285,7 @@ if (NeedFilter)
             
             #line default
             #line hidden
-            this.Write(",\n        CancellationToken cancellationToken)\n    {\n        var result = await ");
+            this.Write(" model,\n        CancellationToken cancellationToken)\n    {\n        var result = await ");
             
             #line 82 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/EndpointTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(ServiceName.ToFirstLower()));
@@ -313,11 +313,67 @@ if (NeedFilter)
             
             #line default
             #line hidden
+            this.Write(">(model, HttpStatusCode.OK));\n    }\n\n\t[ProducesResponseType(200, Type = typeof(ApiResult<");
+            
+            #line 90 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/EndpointTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.PluralName));
+            
+            #line default
+            #line hidden
+            this.Write(">))]\n    [ProducesResponseType(401)]\n    [ProducesResponseType(403)]\n    [ProducesResponseType(404, Type = typeof(ApiResult))]\n    [FeatureGroupName(\"");
+            
+            #line 94 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/EndpointTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.PluralName));
+            
+            #line default
+            #line hidden
+            this.Write("\")]\n    private async Task<IResult> GetById(HttpContext context,\n        [FromServices] I");
+            
+            #line 96 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/EndpointTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(ServiceName));
+            
+            #line default
+            #line hidden
+            this.Write(" ");
+            
+            #line 96 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/EndpointTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(ServiceName.ToFirstLower()));
+            
+            #line default
+            #line hidden
+            this.Write(",\n        [FromQuery] Guid id,\n        CancellationToken cancellationToken)\n    {\n        var result = await ");
+            
+            #line 100 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/EndpointTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(ServiceName.ToFirstLower()));
+            
+            #line default
+            #line hidden
+            this.Write(".GetByIdAsync(id, cancellationToken: cancellationToken);\n\t\tif (result is null)\n\t\t{\n\t\t\treturn Results.Extensions.Custom(new ApiResult<");
+            
+            #line 103 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/EndpointTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.PluralName));
+            
+            #line default
+            #line hidden
+            this.Write(">(HttpStatusCode.BadRequest, new MicroserviceInvalidOperationException(\"Update ");
+            
+            #line 103 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/EndpointTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.Name));
+            
+            #line default
+            #line hidden
+            this.Write(" failed\")));\n\t\t}\n\t\treturn Results.Extensions.Custom(new ApiResult<");
+            
+            #line 105 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/EndpointTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.Name));
+            
+            #line default
+            #line hidden
             this.Write(">(model, HttpStatusCode.OK));\n    }\n\n}\n\n");
             return this.GenerationEnvironment.ToString();
         }
         
-        #line 92 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/EndpointTemplate.tt"
+        #line 110 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/EndpointTemplate.tt"
 
 	internal EntityDescription EntityDescription;
 	internal int MaxLineWidth;

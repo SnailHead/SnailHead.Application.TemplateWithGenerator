@@ -1,0 +1,57 @@
+﻿<#@ template visibility="internal" #>
+using Bogus;
+using Microsoft.Extensions.DependencyInjection;
+using Pepegov.UnitOfWork;
+using Pepegov.UnitOfWork.EntityFramework;
+using Pepegov.UnitOfWork.EntityFramework.Repository;
+using Service.TemplateController.BL.Services.Interfaces;
+using Service.TemplateController.DAL.Entities;
+using Service.TemplateController.Test.MockData;
+using <#= EntityDescription.Name #> = Service.TemplateController.DAL.Entities.<#= EntityDescription.Name #>;
+
+namespace Service.TemplateController.Test.Tests;
+
+public class <#= ServiceName #>Test
+{
+	private I<#= ServiceName #> _<#= ServiceName.ToFirstLower() #> = null!;
+	private IServiceScope _scope = null!;
+	private IUnitOfWorkEntityFrameworkInstance _unitOfWorkEntityFrameworkInstance = null!;
+	private IRepositoryEntityFramework<<#= EntityDescription.Name #>> _<#= EntityDescription.Name.ToFirstLower() #>Repository = null!;
+
+	[SetUp]
+	public void SetUp()
+	{
+		_scope = DIProvider.ServiceProvider.CreateScope();
+		_<#= ServiceName.ToFirstLower() #> = _scope.ServiceProvider.GetRequiredService<I<#= ServiceName #>>();
+		_unitOfWorkEntityFrameworkInstance = DIProvider.ServiceProvider.GetRequiredService<IUnitOfWorkManager>()
+			.GetInstance<IUnitOfWorkEntityFrameworkInstance>();
+		_<#= EntityDescription.Name.ToFirstLower() #>Repository = _unitOfWorkEntityFrameworkInstance.GetRepository<<#= EntityDescription.Name #>>();
+	}
+	
+	[Test]
+	public async Task Create<#= EntityDescription.Name #>_Success()
+	{
+		var entity = Mock<#= EntityDescription.Name #>.Create();
+		var result = await _<#= ServiceName.ToFirstLower() #>.CreateAsync(entity);
+		Assert.That(result is null, Is.True, $"Create <#= EntityDescription.Name #> is success");
+	}
+	
+	
+	[Test]
+	public async Task Get<#= EntityDescription.Name #>_Success()
+	{
+	}
+}
+
+
+<#+
+	internal EntityDescription EntityDescription;
+	internal int MaxLineWidth;
+	internal string ServiceName;
+	internal UnitTestTemplate(EntityDescription entityDescription, int maxLineWidth) {
+		EntityDescription = entityDescription;
+		MaxLineWidth = maxLineWidth;
+		ServiceName = EntityDescription.PluralName + "Service";
+		
+	}
+#>
