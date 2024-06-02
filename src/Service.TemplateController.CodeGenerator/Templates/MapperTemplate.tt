@@ -1,0 +1,24 @@
+﻿<#@ template visibility="internal" #>
+using AutoMapper;
+
+namespace Service.TemplateController.PL.Mapper;
+
+public class <#= EntityDescription.Name #>MappingProfile : Profile
+{
+    public <#= EntityDescription.Name #>MappingProfile()
+    {
+        CreateMap<<#= EntityDescription.Name #>ViewModel, <#= EntityDescription.Name #>>()
+        CreateMap<<#= EntityDescription.Name #>, <#= EntityDescription.Name #>ViewModel>();
+    }
+}
+
+
+
+<#+
+	internal EntityDescription EntityDescription;
+	internal int MaxLineWidth;
+	internal MapperTemplate(EntityDescription entityDescription, int maxLineWidth) {
+		EntityDescription = entityDescription;
+		MaxLineWidth = maxLineWidth;
+	}
+#>

@@ -24,7 +24,6 @@
     <Compile Include="Options\EntityConfiguration.cs" />
     <Compile Include="Options\GeneratorConfigurations.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="PropertyDescription.cs" />
     <Compile Include="StringExtensions.cs" />
     <Compile Include="Templates\ControllerTemplate.cs" />
     <Compile Include="Templates\EndpointTemplate.cs">
@@ -42,6 +41,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>IServiceTemplate.tt</DependentUpon>
     </Compile>
+    <Compile Include="Templates\MapperTemplate.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>MapperTemplate.tt</DependentUpon>
+    </Compile>
     <Compile Include="Templates\MockDataTemplate.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -57,9 +61,15 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>UnitTestTemplate.tt</DependentUpon>
     </Compile>
+    <Compile Include="Templates\ViewModelTemplate.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ViewModelTemplate.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Sharprompt" Version="2.4.5" />
     <PackageReference Include="System.CodeDom" Version="5.0.0" />
   </ItemGroup>
 
@@ -94,6 +104,14 @@
     <None Update="Templates\MockDataTemplate.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>MockDataTemplate.cs</LastGenOutput>
+    </None>
+    <None Update="Templates\ViewModelTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>ViewModelTemplate.cs</LastGenOutput>
+    </None>
+    <None Update="Templates\MapperTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>MapperTemplate.cs</LastGenOutput>
     </None>
   </ItemGroup>
 

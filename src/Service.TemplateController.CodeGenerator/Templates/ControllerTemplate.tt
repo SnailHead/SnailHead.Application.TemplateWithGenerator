@@ -65,7 +65,7 @@ public class <#= EntityDescription.PluralName #>Controller : ControllerBase
 		var result = await _<#= ServiceName.ToFirstLower() #>.UpdateAsync(model, cancellationToken: HttpContext.RequestAborted);
 		if (result is null)
 		{
-			return Results.Extensions.Custom(new ApiResult<<#= EntityDescription.Name #>>(HttpStatusCode.BadRequest, new MicroserviceInvalidOperationException("Update <#= EntityDescription.Name #> failed")));
+			return Results.Extensions.Custom(new ApiResult(HttpStatusCode.BadRequest, new MicroserviceInvalidOperationException("Update <#= EntityDescription.Name #> failed")));
 		}
 		return Results.Extensions.Custom(new ApiResult<<#= EntityDescription.Name #>>(model, HttpStatusCode.OK));
 	}
@@ -80,7 +80,7 @@ public class <#= EntityDescription.PluralName #>Controller : ControllerBase
 		var result = await _<#= ServiceName.ToFirstLower() #>.CreateAsync(model, cancellationToken: HttpContext.RequestAborted);
 		if (result is null)
 		{
-			return Results.Extensions.Custom(new ApiResult<<#= EntityDescription.PluralName #>>(HttpStatusCode.BadRequest, new MicroserviceInvalidOperationException("Update <#= EntityDescription.Name #> failed")));
+			return Results.Extensions.Custom(new ApiResult(HttpStatusCode.BadRequest, new MicroserviceInvalidOperationException("Update <#= EntityDescription.Name #> failed")));
 		}
 		return Results.Extensions.Custom(new ApiResult<<#= EntityDescription.Name #>>(model, HttpStatusCode.OK));
 	}

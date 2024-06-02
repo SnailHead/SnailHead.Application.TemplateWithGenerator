@@ -61,7 +61,6 @@ public class BaseService<TEntity> : IBaseService<TEntity> where TEntity : class,
     public virtual async Task<IList<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>>? predicate = null, Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null, CancellationToken cancellationToken = default)
     {
         return await Repository.GetAllAsync(predicate: predicate, include: include, cancellationToken: cancellationToken);
-
     }
 
     public virtual async Task<TEntity?> CreateAsync(TEntity entity, CancellationToken cancellationToken = default)

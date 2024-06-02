@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -9,6 +10,7 @@ using CodeGeneration.ServerCodeGenerator.Options;
 using CodeGeneration.ServerCodeGenerator.Templates;
 using Service.TemplateController.DAL.Application.Filters;
 using Service.TemplateController.DAL.Database;
+using Sharprompt;
 
 namespace CodeGeneration.ServerCodeGenerator;
 
@@ -33,18 +35,20 @@ internal class CodeGenerator
 		var dalProjectPath = Path.Combine(SolutionFolderPath, "Service.TemplateController.DAL", "Entities");
 		var entityFiles = Directory.GetFiles(dalProjectPath).Where(item => item.EndsWith(".cs")).Select(item => item.Split(Path.DirectorySeparatorChar).LastOrDefault().Replace(".cs", string.Empty)).ToArray();
 		var assembly = Assembly.GetAssembly(typeof(DefaultDbContext));
+		var assemblyTypes = assembly.GetTypes();
 		Entities = new List<EntityDescription>();
 		foreach (var item in entityFiles)
 		{
-			var filterProperty = GetFilterProperty(item, assembly);
-			Entities.Add(new EntityDescription(item, item, filterProperty));
+			var filterProperty = GetFilterProperty(item, assemblyTypes);
+			Entities.Add(new EntityDescription(item, item, filterProperty, 
+				assemblyTypes.First(type => type.Name == item).GetProperties(BindingFlags.Public | BindingFlags.Instance)));
 		}
 	}
 
-	private Dictionary<string, string> GetFilterProperty(string entityFile, Assembly assembly)
+	private Dictionary<string, string> GetFilterProperty(string entityFile, Type[] assemblyTypes)
 	{
 		PropertyInfo[] properties =
-			assembly.GetTypes().First(item => item.Name == entityFile).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+			assemblyTypes.First(item => item.Name == entityFile).GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
 		return properties.Where(item => item.GetCustomAttributes(typeof(IncludeInFilterModelAttribute)).Any()).Select(i => (i.PropertyType.Name=="Nullable`1" ? i.PropertyType.GenericTypeArguments[0].Name : i.PropertyType.Name , i.Name))
 			.ToDictionary(item => item.Item1, item => item.Item2);
@@ -65,11 +69,12 @@ internal class CodeGenerator
 			{
 				case UsageTemplateEnum.Controller:
 					GenerateControllers(project);
-					GenerateFilters(project);
+					GenerateViewModels(project, Configurations.BaseConfiguration.UsageTemplate);
+					GenerateFilters(project, Configurations.BaseConfiguration.UsageTemplate);
 					break;
 				case UsageTemplateEnum.Endpoint:
-					GenerateEndpoints(project);
-					GenerateFiltersForEndpoints(project);
+					GenerateEndpoints(project, Configurations.BaseConfiguration.UsageTemplate);
+					GenerateFilters(project, Configurations.BaseConfiguration.UsageTemplate);
 					break;
 				default:
 					break;
@@ -91,13 +96,13 @@ internal class CodeGenerator
 			var testFileName = $"{description.PluralName}ServiceTest.cs";
 			var testItem = new MicrosoftBuildProject.Item(Path.Combine("Tests", testFileName), "Compile");
 			CreateFileInProject(project, testItem, 
-				new UnitTestTemplate(description.ExcludeNewProperties(), MaxLineWidth).TransformText(),
+				new UnitTestTemplate(description, MaxLineWidth).TransformText(),
 				new UnitTestTemplate(description, MaxLineWidth).TransformText(), 
 				$"Генерация тестов бизнес-логики {testFileName}...");
 			var fileName = $"Mock{description.PluralName}.cs";
 			var item = new MicrosoftBuildProject.Item(Path.Combine("MockData", fileName), "Compile");
 			CreateFileInProject(project, item, 
-				new MockDataTemplate(description.ExcludeNewProperties(), MaxLineWidth).TransformText(),
+				new MockDataTemplate(description, MaxLineWidth).TransformText(),
 				new MockDataTemplate(description, MaxLineWidth).TransformText(), 
 				$"Генерация конструктора моков {fileName}...");
 		}
@@ -109,13 +114,13 @@ internal class CodeGenerator
 			var interfaceFileName = $"I{description.PluralName}Service.cs";
 			var interfaceItem = new MicrosoftBuildProject.Item(Path.Combine("Services", "Interfaces", interfaceFileName), "Compile");
 			CreateFileInProject(project, interfaceItem, 
-				new IServiceTemplate(description.ExcludeNewProperties(), MaxLineWidth).TransformText(),
+				new IServiceTemplate(description, MaxLineWidth).TransformText(),
 				new IServiceTemplate(description, MaxLineWidth).TransformText(), 
 				$"Генерация интерфейса бизнес-логики {interfaceFileName}...");
 			var fileName = description.PluralName + "Service.cs";
 			var item = new MicrosoftBuildProject.Item(Path.Combine("Services", fileName), "Compile");
 			CreateFileInProject(project, item, 
-				new ServiceTemplate(description.ExcludeNewProperties(), MaxLineWidth).TransformText(),
+				new ServiceTemplate(description, MaxLineWidth).TransformText(),
 				new ServiceTemplate(description, MaxLineWidth).TransformText(), 
 				$"Генерация класса бизнес-логики {fileName}...");
 		}
@@ -128,24 +133,41 @@ internal class CodeGenerator
 			var fileName = description.PluralName + "Controller.cs";
 			var item = new MicrosoftBuildProject.Item(Path.Combine("Controllers", fileName), "Compile");
 			CreateFileInProject(project, item, 
-				new ControllerTemplate(description.ExcludeNewProperties(), MaxLineWidth).TransformText(),
+				new ControllerTemplate(description, MaxLineWidth).TransformText(),
 				new ControllerTemplate(description, MaxLineWidth).TransformText(), 
 				$"Генерация контроллера {fileName}...");
 		}
 	}
-	private void GenerateEndpoints(MicrosoftBuildProject project)
+	private void GenerateViewModels(MicrosoftBuildProject project, UsageTemplateEnum template)
+	{
+		foreach (var description in Entities)
+		{
+			var fileName = description.PluralName + "ViewModel.cs";
+			var item = new MicrosoftBuildProject.Item(Path.Combine("Models", fileName), "Compile");
+			var propertyInfos = Prompt.MultiSelect($"Выберите свойства для {description.Name}ViewModel", description.Properties, 15, 0,int.MaxValue);
+			if (!propertyInfos.Any())
+			{
+				continue;
+			}
+			CreateFileInProject(project, item, 
+				new ViewModelTemplate(description, MaxLineWidth, propertyInfos.ToArray()).TransformText(),
+				new ViewModelTemplate(description, MaxLineWidth, propertyInfos.ToArray()).TransformText(), 
+				$"Генерация view model {fileName}...");
+		}
+	}
+	private void GenerateEndpoints(MicrosoftBuildProject project, UsageTemplateEnum template)
 	{
 		foreach (var description in Entities)
 		{
 			var fileName = description.PluralName + "EndPoint.cs";
 			var item = new MicrosoftBuildProject.Item(Path.Combine("EndPoints",  description.PluralName, fileName), "Compile");
 			CreateFileInProject(project, item, 
-				new ControllerTemplate(description.ExcludeNewProperties(), MaxLineWidth).TransformText(),
+				new ControllerTemplate(description, MaxLineWidth).TransformText(),
 				new ControllerTemplate(description, MaxLineWidth).TransformText(), 
 				$"Генерация контроллера {fileName}...");
 		}
 	}
-	private void GenerateFilters(MicrosoftBuildProject project)
+	private void GenerateFilters(MicrosoftBuildProject project, UsageTemplateEnum template)
 	{
 		foreach (var description in Entities)
 		{
@@ -154,12 +176,12 @@ internal class CodeGenerator
 			var fileName = description.PluralName + "FilterModel.cs";
 			var item = new MicrosoftBuildProject.Item(Path.Combine("Models", "Filters", fileName), "Compile");
 			CreateFileInProject(project, item, 
-				new FilterModelTemplate(description.ExcludeNewProperties(), MaxLineWidth).TransformText(),
+				new FilterModelTemplate(description, MaxLineWidth).TransformText(),
 				new FilterModelTemplate(description, MaxLineWidth).TransformText(), 
 				$"Генерация фильтра {fileName}...");
 		}
 	}
-	private void GenerateFiltersForEndpoints(MicrosoftBuildProject project)
+	private void GenerateMappers(MicrosoftBuildProject project, UsageTemplateEnum template)
 	{
 		foreach (var description in Entities)
 		{
@@ -168,7 +190,7 @@ internal class CodeGenerator
 			var fileName = description.PluralName + "FilterModel.cs";
 			var item = new MicrosoftBuildProject.Item(Path.Combine("Models", "Filters", fileName), "Compile");
 			CreateFileInProject(project, item, 
-				new FilterModelTemplate(description.ExcludeNewProperties(), MaxLineWidth).TransformText(),
+				new FilterModelTemplate(description, MaxLineWidth).TransformText(),
 				new FilterModelTemplate(description, MaxLineWidth).TransformText(), 
 				$"Генерация фильтра {fileName}...");
 		}

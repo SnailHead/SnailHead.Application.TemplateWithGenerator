@@ -14,7 +14,7 @@ public class Restaurant : IEntity
 
     public int SellerId { get; set; }
 
-    public string Name { get; set; }
+    public string Name { get; set; }    
 
     public string ImageUrl { get; set; }
 

@@ -209,14 +209,7 @@ if (NeedFilter) {
             
             #line default
             #line hidden
-            this.Write(".UpdateAsync(model, cancellationToken: HttpContext.RequestAborted);\n\t\tif (result is null)\n\t\t{\n\t\t\treturn Results.Extensions.Custom(new ApiResult<");
-            
-            #line 68 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.Name));
-            
-            #line default
-            #line hidden
-            this.Write(">(HttpStatusCode.BadRequest, new MicroserviceInvalidOperationException(\"Update ");
+            this.Write(".UpdateAsync(model, cancellationToken: HttpContext.RequestAborted);\n\t\tif (result is null)\n\t\t{\n\t\t\treturn Results.Extensions.Custom(new ApiResult(HttpStatusCode.BadRequest, new MicroserviceInvalidOperationException(\"Update ");
             
             #line 68 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.Name));
@@ -251,14 +244,7 @@ if (NeedFilter) {
             
             #line default
             #line hidden
-            this.Write(".CreateAsync(model, cancellationToken: HttpContext.RequestAborted);\n\t\tif (result is null)\n\t\t{\n\t\t\treturn Results.Extensions.Custom(new ApiResult<");
-            
-            #line 83 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.PluralName));
-            
-            #line default
-            #line hidden
-            this.Write(">(HttpStatusCode.BadRequest, new MicroserviceInvalidOperationException(\"Update ");
+            this.Write(".CreateAsync(model, cancellationToken: HttpContext.RequestAborted);\n\t\tif (result is null)\n\t\t{\n\t\t\treturn Results.Extensions.Custom(new ApiResult(HttpStatusCode.BadRequest, new MicroserviceInvalidOperationException(\"Update ");
             
             #line 83 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.Name));

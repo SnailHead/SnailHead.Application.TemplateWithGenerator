@@ -13,7 +13,17 @@
     {
       "EntityName": "RestaurantImage",
       "NeedApi" : false,
-      "NeedUnitTest": false
+      "NeedUnitTest": false,
+      "ViewModelPropertyies": [
+        {
+          "name" : "id",
+          "type" : "int"
+        },
+        {
+          "name" : "id",
+          "type" : "int"
+        }
+      ]
     }
   ]
 }
