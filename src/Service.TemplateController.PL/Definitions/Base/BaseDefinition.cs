@@ -1,7 +1,6 @@
 ﻿using Pepegov.MicroserviceFramework.AspNetCore.WebApplicationDefinition;
 using Pepegov.MicroserviceFramework.Definition;
 using Pepegov.MicroserviceFramework.Definition.Context;
-using Service.TemplateController.BL.Services;
 
 namespace Service.TemplateController.PL.Definitions.Base;
 

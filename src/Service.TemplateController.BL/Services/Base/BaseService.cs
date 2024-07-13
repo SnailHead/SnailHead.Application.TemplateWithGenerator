@@ -8,7 +8,6 @@ using Pepegov.UnitOfWork.Entityes;
 using Pepegov.UnitOfWork.EntityFramework;
 using Pepegov.UnitOfWork.EntityFramework.Repository;
 using Pepegov.UnitOfWork.Extensions;
-using Service.TemplateController.BL.Services.Base.Helpers;
 using Service.TemplateController.DAL.Application;
 using Service.TemplateController.DAL.Application.Filters;
 

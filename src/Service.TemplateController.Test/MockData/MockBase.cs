@@ -1,7 +1,3 @@
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Pepegov.UnitOfWork;
-using Pepegov.UnitOfWork.EntityFramework;
 using Service.TemplateController.DAL.Application;
 using Service.TemplateController.Test.MockData.Interface;
 

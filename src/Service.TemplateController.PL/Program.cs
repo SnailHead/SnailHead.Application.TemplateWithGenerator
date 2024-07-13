@@ -1,7 +1,6 @@
 using Microsoft.IdentityModel.Logging;
 using Pepegov.MicroserviceFramework.AspNetCore.WebApplicationDefinition;
 using Serilog;
-using Serilog.Events;
 
 try
 {

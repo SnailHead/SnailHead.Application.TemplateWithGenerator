@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Diagnostics;
-using Pepegov.MicroserviceFramework.AspNetCore.Infrastructure.Filter;
 using Pepegov.MicroserviceFramework.AspNetCore.WebApplicationDefinition;
 using Pepegov.MicroserviceFramework.Definition;
 using Pepegov.MicroserviceFramework.Definition.Context;

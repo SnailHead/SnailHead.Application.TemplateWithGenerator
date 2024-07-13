@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="AutoMapper" Version="13.0.1" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="7.0.17" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.17" />
+        <PackageReference Include="Blazored.LocalStorage" Version="4.3.0" />
+        <PackageReference Include="FluentValidation" Version="11.7.1" />
+        <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="8.0.0" />
+        <PackageReference Include="MudBlazor" Version="7.1.1" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.17" PrivateAssets="all" />
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.35.0" />
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Service.TemplateController.AdminPanel\Service.TemplateController.AdminPanel.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Pages\CoinSettings\Index.razor" />
+      <_ContentIncludedByDefault Remove="Pages\Shops\Details.razor" />
+      <_ContentIncludedByDefault Remove="Pages\Shops\Index.razor" />
+      <_ContentIncludedByDefault Remove="Pages\Payments\Details.razor" />
+      <_ContentIncludedByDefault Remove="Pages\Payments\Index.razor" />
+    </ItemGroup>
+
+</Project>

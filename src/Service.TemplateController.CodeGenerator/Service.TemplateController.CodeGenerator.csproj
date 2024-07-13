@@ -26,6 +26,16 @@
     <Compile Include="Program.cs" />
     <Compile Include="StringExtensions.cs" />
     <Compile Include="Templates\ControllerTemplate.cs" />
+    <Compile Include="Templates\EditPageLogicTemplate.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>EditPageLogicTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Templates\EditPageTemplate.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>EditPageTemplate.tt</DependentUpon>
+    </Compile>
     <Compile Include="Templates\EndpointTemplate.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -35,6 +45,16 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>FilterModelTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Templates\IndexPageLogicTemplate.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>IndexPageLogicTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Templates\IndexPageTemplate.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>IndexPageTemplate.tt</DependentUpon>
     </Compile>
     <Compile Include="Templates\IServiceTemplate.cs">
       <AutoGen>True</AutoGen>
@@ -112,6 +132,22 @@
     <None Update="Templates\MapperTemplate.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>MapperTemplate.cs</LastGenOutput>
+    </None>
+    <None Update="Templates\IndexPageTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>IndexPageTemplate.cs</LastGenOutput>
+    </None>
+    <None Update="Templates\EditPageTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>EditPageTemplate.cs</LastGenOutput>
+    </None>
+    <None Update="Templates\IndexPageLogicTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>IndexPageLogicTemplate.cs</LastGenOutput>
+    </None>
+    <None Update="Templates\EditPageLogicTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>EditPageLogicTemplate.cs</LastGenOutput>
     </None>
   </ItemGroup>
 
