@@ -11,36 +11,38 @@ using <#= EntityDescription.Name #> = Service.TemplateController.DAL.Entities.<#
 
 namespace Service.TemplateController.Test.Tests;
 
-public class <#= ServiceName #>Test
+public class <#= ServiceName #>Test  : BaseServiceTest<<#= EntityDescription.Name #>>
 {
-	private I<#= ServiceName #> _<#= ServiceName.ToFirstLower() #> = null!;
-	private IServiceScope _scope = null!;
-	private IUnitOfWorkEntityFrameworkInstance _unitOfWorkEntityFrameworkInstance = null!;
-	private IRepositoryEntityFramework<<#= EntityDescription.Name #>> _<#= EntityDescription.Name.ToFirstLower() #>Repository = null!;
+	private I<#= ServiceName #> _service = null!;
+    private IServiceScope _scope = null!; 
+    private readonly MockBase<<#= EntityDescription.Name #>> _mock = new Mock<#= EntityDescription.Name #>();
 
-	[SetUp]
-	public void SetUp()
-	{
-		_scope = DIProvider.ServiceProvider.CreateScope();
-		_<#= ServiceName.ToFirstLower() #> = _scope.ServiceProvider.GetRequiredService<I<#= ServiceName #>>();
-		_unitOfWorkEntityFrameworkInstance = DIProvider.ServiceProvider.GetRequiredService<IUnitOfWorkManager>()
-			.GetInstance<IUnitOfWorkEntityFrameworkInstance>();
-		_<#= EntityDescription.Name.ToFirstLower() #>Repository = _unitOfWorkEntityFrameworkInstance.GetRepository<<#= EntityDescription.Name #>>();
-	}
-	
-	[Test]
-	public async Task Create<#= EntityDescription.Name #>_Success()
-	{
-		var entity = Mock<#= EntityDescription.Name #>.Create();
-		var result = await _<#= ServiceName.ToFirstLower() #>.CreateAsync(entity);
-		Assert.That(result is null, Is.True, $"Create <#= EntityDescription.Name #> is success");
-	}
-	
-	
-	[Test]
-	public async Task Get<#= EntityDescription.Name #>_Success()
-	{
-	}
+    [SetUp]
+    public void SetUp()
+    {
+        _scope = DIProvider.ServiceProvider.CreateScope();
+        UnitOfWorkEntityFrameworkInstance = DIProvider.ServiceProvider.GetRequiredService<IUnitOfWorkManager>()
+            .GetInstance<IUnitOfWorkEntityFrameworkInstance>();
+        Repository = UnitOfWorkEntityFrameworkInstance.GetRepository<<#= EntityDescription.Name #>>();
+        _service = _scope.ServiceProvider.GetRequiredService<I<#= ServiceName #>>();
+        BaseService = _service;
+        Mock = _mock;
+    }
+    [Test]
+    public new async Task CreateEntity_Success()
+    {
+        await base.CreateEntity_Success();
+    }
+    [Test]
+    public new async Task DeleteEntity_Success()
+    {
+        await base.DeleteEntity_Success();
+    }
+    [Test]
+    public new async Task GetPaged_Success()
+    {
+        await base.GetPaged_Success();
+    }
 }
 
 

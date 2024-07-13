@@ -4,4 +4,6 @@ public enum UsageTemplateEnum
 {
     Endpoint,
     Controller,
+    ControllerWithCQRS,
+    EndpointWithCQRS,
 }

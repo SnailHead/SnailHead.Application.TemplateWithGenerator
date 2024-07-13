@@ -9,6 +9,9 @@
 // ------------------------------------------------------------------------------
 namespace CodeGeneration.ServerCodeGenerator.Templates
 {
+    using System.Reflection;
+    using System.Linq;
+    using System.Text;
     using System;
     
     /// <summary>
@@ -25,59 +28,98 @@ namespace CodeGeneration.ServerCodeGenerator.Templates
         /// </summary>
         public virtual string TransformText()
         {
-            this.Write("using AutoMapper;\n\nnamespace Service.TemplateController.PL.Mapper;\n\npublic class ");
+            this.Write("using AutoMapper;\nusing Service.TemplateController.DAL.Entities;\nusing Service.TemplateController.PL.Models;\n\nnamespace Service.TemplateController.PL.Mappings;\n\npublic class ");
             
-            #line 6 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/MapperTemplate.tt"
+            #line 11 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/MapperTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.Name));
             
             #line default
             #line hidden
             this.Write("MappingProfile : Profile\n{\n    public ");
             
-            #line 8 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/MapperTemplate.tt"
+            #line 13 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/MapperTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.Name));
             
             #line default
             #line hidden
             this.Write("MappingProfile()\n    {\n        CreateMap<");
             
-            #line 10 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/MapperTemplate.tt"
+            #line 15 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/MapperTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.Name));
             
             #line default
             #line hidden
             this.Write("ViewModel, ");
             
-            #line 10 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/MapperTemplate.tt"
+            #line 15 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/MapperTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.Name));
             
             #line default
             #line hidden
-            this.Write(">()\n        CreateMap<");
+            this.Write(">()");
             
-            #line 11 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/MapperTemplate.tt"
+            #line 15 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/MapperTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(AddIgnoreMapping(true)));
+            
+            #line default
+            #line hidden
+            this.Write(";\n        CreateMap<");
+            
+            #line 16 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/MapperTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.Name));
             
             #line default
             #line hidden
             this.Write(", ");
             
-            #line 11 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/MapperTemplate.tt"
+            #line 16 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/MapperTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.Name));
             
             #line default
             #line hidden
-            this.Write("ViewModel>();\n    }\n}\n\n\n\n");
+            this.Write("ViewModel>()");
+            
+            #line 16 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/MapperTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(AddIgnoreMapping(false)));
+            
+            #line default
+            #line hidden
+            this.Write(";\n    }\n}\n\n\n\n");
             return this.GenerationEnvironment.ToString();
         }
         
-        #line 17 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/MapperTemplate.tt"
+        #line 22 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/MapperTemplate.tt"
 
 	internal EntityDescription EntityDescription;
 	internal int MaxLineWidth;
-	internal MapperTemplate(EntityDescription entityDescription, int maxLineWidth) {
+	private Type Entity;
+	private PropertyInfo[] ViewModelProps;
+	internal MapperTemplate(EntityDescription entityDescription, int maxLineWidth, Type entity, PropertyInfo[] viewModelProps ) {
 		EntityDescription = entityDescription;
 		MaxLineWidth = maxLineWidth;
+		Entity = entity;
+		ViewModelProps = viewModelProps;
+	}
+
+	private string AddIgnoreMapping(bool fromEntity)
+	{
+		var props = Array.Empty<PropertyInfo>();
+		if (fromEntity)
+		{
+			props = Entity.GetProperties(BindingFlags.Public | BindingFlags.Instance).ToArray().Except(ViewModelProps).ToArray();
+		}
+		else
+		{
+			props = ViewModelProps.Except(Entity.GetProperties(BindingFlags.Public | BindingFlags.Instance).ToArray()).ToArray();
+		}
+		if (props.Length == 0) return string.Empty;
+
+		var sb = new StringBuilder();
+		foreach (var prop in props)
+		{
+			sb.Append($"{Environment.NewLine}\t\t.ForMember(i => i.{prop.Name}, i => i.Ignore())");
+		}
+		return sb.ToString();
 	}
 
         

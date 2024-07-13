@@ -1,14 +1,19 @@
 ﻿<#@ template visibility="internal" #>
+<#@ import namespace="System.Reflection" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
 using AutoMapper;
+using Service.TemplateController.DAL.Entities;
+using Service.TemplateController.PL.Models;
 
-namespace Service.TemplateController.PL.Mapper;
+namespace Service.TemplateController.PL.Mappings;
 
 public class <#= EntityDescription.Name #>MappingProfile : Profile
 {
     public <#= EntityDescription.Name #>MappingProfile()
     {
-        CreateMap<<#= EntityDescription.Name #>ViewModel, <#= EntityDescription.Name #>>()
-        CreateMap<<#= EntityDescription.Name #>, <#= EntityDescription.Name #>ViewModel>();
+        CreateMap<<#= EntityDescription.Name #>ViewModel, <#= EntityDescription.Name #>>()<#= AddIgnoreMapping(true) #>;
+        CreateMap<<#= EntityDescription.Name #>, <#= EntityDescription.Name #>ViewModel>()<#= AddIgnoreMapping(false) #>;
     }
 }
 
@@ -17,8 +22,33 @@ public class <#= EntityDescription.Name #>MappingProfile : Profile
 <#+
 	internal EntityDescription EntityDescription;
 	internal int MaxLineWidth;
-	internal MapperTemplate(EntityDescription entityDescription, int maxLineWidth) {
+	private Type Entity;
+	private PropertyInfo[] ViewModelProps;
+	internal MapperTemplate(EntityDescription entityDescription, int maxLineWidth, Type entity, PropertyInfo[] viewModelProps ) {
 		EntityDescription = entityDescription;
 		MaxLineWidth = maxLineWidth;
+		Entity = entity;
+		ViewModelProps = viewModelProps;
+	}
+
+	private string AddIgnoreMapping(bool fromEntity)
+	{
+		var props = Array.Empty<PropertyInfo>();
+		if (fromEntity)
+		{
+			props = Entity.GetProperties(BindingFlags.Public | BindingFlags.Instance).ToArray().Except(ViewModelProps).ToArray();
+		}
+		else
+		{
+			props = ViewModelProps.Except(Entity.GetProperties(BindingFlags.Public | BindingFlags.Instance).ToArray()).ToArray();
+		}
+		if (props.Length == 0) return string.Empty;
+
+		var sb = new StringBuilder();
+		foreach (var prop in props)
+		{
+			sb.Append($"{Environment.NewLine}\t\t.ForMember(i => i.{prop.Name}, i => i.Ignore())");
+		}
+		return sb.ToString();
 	}
 #>

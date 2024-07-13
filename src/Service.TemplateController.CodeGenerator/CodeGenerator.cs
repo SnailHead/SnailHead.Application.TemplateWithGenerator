@@ -19,7 +19,6 @@ internal class CodeGenerator
 	internal TextWriter MessagesWriter { get; }
 	internal MergeUtility MergeUtility { get; set; }
 	internal string SolutionFolderPath { get; }
-	internal string ProjectName { get; }
 	internal ExistingFilesProcessMode ExistingFilesProcessMode { get; }
 	internal IList<EntityDescription> Entities { get; }
 	internal GeneratorConfigurations Configurations { get; }
@@ -33,15 +32,16 @@ internal class CodeGenerator
 		MergeUtility = mergeUtility;
 		Configurations = config;
 		var dalProjectPath = Path.Combine(SolutionFolderPath, "Service.TemplateController.DAL", "Entities");
-		var entityFiles = Directory.GetFiles(dalProjectPath).Where(item => item.EndsWith(".cs")).Select(item => item.Split(Path.DirectorySeparatorChar).LastOrDefault().Replace(".cs", string.Empty)).ToArray();
+		var entityFiles = Directory.GetFiles(dalProjectPath).Where(item => item.EndsWith(".cs"))
+			.Select(item => item.Split(Path.DirectorySeparatorChar).LastOrDefault()?.Replace(".cs", string.Empty)).ToArray();
 		var assembly = Assembly.GetAssembly(typeof(DefaultDbContext));
-		var assemblyTypes = assembly.GetTypes();
+		var assemblyTypes = assembly?.GetTypes();
 		Entities = new List<EntityDescription>();
 		foreach (var item in entityFiles)
 		{
 			var filterProperty = GetFilterProperty(item, assemblyTypes);
 			Entities.Add(new EntityDescription(item, item, filterProperty, 
-				assemblyTypes.First(type => type.Name == item).GetProperties(BindingFlags.Public | BindingFlags.Instance)));
+				assemblyTypes?.First(type => type.Name == item).GetProperties(BindingFlags.Public | BindingFlags.Instance)));
 		}
 	}
 
@@ -50,7 +50,8 @@ internal class CodeGenerator
 		PropertyInfo[] properties =
 			assemblyTypes.First(item => item.Name == entityFile).GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
-		return properties.Where(item => item.GetCustomAttributes(typeof(IncludeInFilterModelAttribute)).Any()).Select(i => (i.PropertyType.Name=="Nullable`1" ? i.PropertyType.GenericTypeArguments[0].Name : i.PropertyType.Name , i.Name))
+		return properties.Where(item => item.GetCustomAttributes(typeof(IncludeInFilterModelAttribute)).Any())
+			.Select(i => (i.PropertyType.Name=="Nullable`1" ? i.PropertyType.GenericTypeArguments[0].Name : i.PropertyType.Name , i.Name))
 			.ToDictionary(item => item.Item1, item => item.Item2);
 	}
 		
@@ -58,35 +59,33 @@ internal class CodeGenerator
 	internal void Generate()
 	{
 		MicrosoftBuildProject project;
-		if (ProjectName == null)
+		project = new MicrosoftBuildProject(Path.Combine(SolutionFolderPath, "Service.TemplateController.BL", "Service.TemplateController.BL.csproj"));
+		GenerateBusinessLogicClasses(project);
+		project.Save();
+			
+		project = new MicrosoftBuildProject(Path.Combine(SolutionFolderPath, "Service.TemplateController.PL", "Service.TemplateController.PL.csproj"));
+		switch (Configurations.BaseConfiguration.UsageTemplate)
 		{
-			project = new MicrosoftBuildProject(Path.Combine(SolutionFolderPath, "Service.TemplateController.BL", "Service.TemplateController.BL.csproj"));
-			GenerateBusinessLogicClasses(project);
-			project.Save();
-				
-			project = new MicrosoftBuildProject(Path.Combine(SolutionFolderPath, "Service.TemplateController.PL", "Service.TemplateController.PL.csproj"));
-			switch (Configurations.BaseConfiguration.UsageTemplate)
-			{
-				case UsageTemplateEnum.Controller:
-					GenerateControllers(project);
-					GenerateViewModels(project, Configurations.BaseConfiguration.UsageTemplate);
-					GenerateFilters(project, Configurations.BaseConfiguration.UsageTemplate);
-					break;
-				case UsageTemplateEnum.Endpoint:
-					GenerateEndpoints(project, Configurations.BaseConfiguration.UsageTemplate);
-					GenerateFilters(project, Configurations.BaseConfiguration.UsageTemplate);
-					break;
-				default:
-					break;
-			}
-
-			if (Configurations.BaseConfiguration.NeedUnitTest)
-			{
-				project = new MicrosoftBuildProject(Path.Combine(SolutionFolderPath, "Service.TemplateController.Test", "Service.TemplateController.Test.csproj"));
-				GenerateTests(project);
-			}
-			project.Save();
+			case UsageTemplateEnum.Controller:
+				GenerateControllers(project);
+				break;
+			case UsageTemplateEnum.Endpoint:
+				GenerateEndpoints(project, Configurations.BaseConfiguration.UsageTemplate);
+				break;
+			default:
+				break;
 		}
+		var props = GenerateViewModels(project, Configurations.BaseConfiguration.UsageTemplate);
+		GenerateMappers(project, Configurations.BaseConfiguration.UsageTemplate, props);
+		GenerateFilters(project, Configurations.BaseConfiguration.UsageTemplate);
+		project.Save();
+		
+		if (Configurations.BaseConfiguration.NeedUnitTest)
+		{
+			project = new MicrosoftBuildProject(Path.Combine(SolutionFolderPath, "Service.TemplateController.Test", "Service.TemplateController.Test.csproj"));
+			GenerateTests(project);
+		}
+		project.Save();
 	}
 	
 	private void GenerateTests(MicrosoftBuildProject project)
@@ -138,13 +137,14 @@ internal class CodeGenerator
 				$"Генерация контроллера {fileName}...");
 		}
 	}
-	private void GenerateViewModels(MicrosoftBuildProject project, UsageTemplateEnum template)
+	private Dictionary<string, PropertyInfo[]> GenerateViewModels(MicrosoftBuildProject project, UsageTemplateEnum template)
 	{
+		var props = new Dictionary<string, PropertyInfo[]>();
 		foreach (var description in Entities)
 		{
 			var fileName = description.PluralName + "ViewModel.cs";
 			var item = new MicrosoftBuildProject.Item(Path.Combine("Models", fileName), "Compile");
-			var propertyInfos = Prompt.MultiSelect($"Выберите свойства для {description.Name}ViewModel", description.Properties, 15, 0,int.MaxValue);
+			var propertyInfos = Prompt.MultiSelect($"Выберите свойства для {description.Name}ViewModel", description.Properties, 15, 0);
 			if (!propertyInfos.Any())
 			{
 				continue;
@@ -153,7 +153,10 @@ internal class CodeGenerator
 				new ViewModelTemplate(description, MaxLineWidth, propertyInfos.ToArray()).TransformText(),
 				new ViewModelTemplate(description, MaxLineWidth, propertyInfos.ToArray()).TransformText(), 
 				$"Генерация view model {fileName}...");
+			props[description.PluralName] = propertyInfos.ToArray();
 		}
+
+		return props;
 	}
 	private void GenerateEndpoints(MicrosoftBuildProject project, UsageTemplateEnum template)
 	{
@@ -181,18 +184,26 @@ internal class CodeGenerator
 				$"Генерация фильтра {fileName}...");
 		}
 	}
-	private void GenerateMappers(MicrosoftBuildProject project, UsageTemplateEnum template)
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="project"></param>
+	/// <param name="template"></param>
+	private void GenerateMappers(MicrosoftBuildProject project, UsageTemplateEnum template, Dictionary<string, PropertyInfo[]> props)
 	{
+		var assembly = Assembly.GetAssembly(typeof(DefaultDbContext));
+		var assemblyTypes = assembly?.GetTypes();
 		foreach (var description in Entities)
-		{
-			if (description.FilterProperties.Count == 0)
-				continue;
-			var fileName = description.PluralName + "FilterModel.cs";
-			var item = new MicrosoftBuildProject.Item(Path.Combine("Models", "Filters", fileName), "Compile");
+		{ 
+			if (!props.TryGetValue(description.PluralName, out var viewModelProps)) continue;
+			var fileName = description.PluralName + "MappingProfile.cs";
+			var item = new MicrosoftBuildProject.Item(Path.Combine("Mappings", fileName), "Compile");
+			var type = assemblyTypes.First(i => i.Name == description.PluralName);
+			
 			CreateFileInProject(project, item, 
-				new FilterModelTemplate(description, MaxLineWidth).TransformText(),
-				new FilterModelTemplate(description, MaxLineWidth).TransformText(), 
-				$"Генерация фильтра {fileName}...");
+				new MapperTemplate(description, MaxLineWidth, type, viewModelProps).TransformText(),
+				new MapperTemplate(description, MaxLineWidth, type, viewModelProps).TransformText(), 
+				$"Генерация маппингов {fileName}...");
 		}
 	}
 

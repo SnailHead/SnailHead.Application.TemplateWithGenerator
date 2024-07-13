@@ -1,5 +1,10 @@
 ﻿<#@ template visibility="internal" #>
 <#@ import namespace="System.Reflection" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Collections" #>
+using Service.TemplateController.DAL.Entities;
+
 namespace Service.TemplateController.PL.Models;
 
 public class <#= EntityDescription.Name #>ViewModel
@@ -8,7 +13,7 @@ public class <#= EntityDescription.Name #>ViewModel
 	foreach (var item in PropertyInfos)
 	{
 #>
-	public <#= Nullable.GetUnderlyingType(item.PropertyType)?.Name ?? item.PropertyType.Name#> <#=item.Name#> { get; set; } 
+	public <#=GetTypeAlias(item.PropertyType) #> <#=item.Name#> { get; set; } 
 <#
 	}
 #>
@@ -19,9 +24,47 @@ public class <#= EntityDescription.Name #>ViewModel
 	internal EntityDescription EntityDescription;
 	internal int MaxLineWidth;
 	internal PropertyInfo[] PropertyInfos;
+	private Dictionary<Type, string> _typeAlias;
 	internal ViewModelTemplate(EntityDescription entityDescription, int maxLineWidth, PropertyInfo[] propertyInfos) {
 		EntityDescription = entityDescription;
 		MaxLineWidth = maxLineWidth;
 		PropertyInfos = propertyInfos;
+		_typeAlias = new Dictionary<Type, string>()
+		{
+			{ typeof(bool), "bool" },
+			{ typeof(byte), "byte" },
+			{ typeof(sbyte), "sbyte" },
+			{ typeof(char), "char" },
+			{ typeof(decimal), "decimal" },
+			{ typeof(double), "double" },
+			{ typeof(float), "float" },
+			{ typeof(int), "int" },
+			{ typeof(uint), "uint" },
+			{ typeof(nint), "nint" },
+			{ typeof(nuint), "nuint" },
+			{ typeof(long), "long" },
+			{ typeof(ulong), "ulong" },
+			{ typeof(short), "short" },
+			{ typeof(ushort), "ushort" },
+			{ typeof(object), "object" },
+			{ typeof(string), "string" },
+			{ typeof(Guid), "Guid" },
+		};
+	}
+
+	private string GetTypeAlias(Type type)
+	{
+		var key = Nullable.GetUnderlyingType(type) ?? type;
+		var alias = string.Empty;
+		if (!_typeAlias.TryGetValue(key, out alias))
+		{
+			if (key.GetInterfaces().Any(i => i == typeof(IEnumerable)))
+			{
+				alias = new string(key.Name.Where(char.IsLetter).ToArray()) + $"<{key.GenericTypeArguments[0].Name}>";
+				return alias;
+			}
+			return key.Name;
+		}
+		return Nullable.GetUnderlyingType(type) is not null ? $"{alias}?" : alias;
 	}
 #>

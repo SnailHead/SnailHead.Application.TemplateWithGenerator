@@ -25,21 +25,28 @@ namespace CodeGeneration.ServerCodeGenerator.Templates
         /// </summary>
         public virtual string TransformText()
         {
-            this.Write("using Bogus;\nusing Service.TemplateController.DAL.Entities;\n\nnamespace Service.TemplateController.Test.MockData;\n\npublic static class Mock");
+            this.Write("using Bogus;\nusing Service.TemplateController.DAL.Entities;\n\nnamespace Service.TemplateController.Test.MockData;\n\npublic class Mock");
             
             #line 7 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/MockDataTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.Name));
             
             #line default
             #line hidden
-            this.Write("\n{\n    public static ");
+            this.Write(" : MockBase<");
+            
+            #line 7 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/MockDataTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.Name));
+            
+            #line default
+            #line hidden
+            this.Write(">\n{\n    public override async Task<");
             
             #line 9 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/MockDataTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.Name));
             
             #line default
             #line hidden
-            this.Write(" Create()\n    {\n        Randomizer.Seed = new Random(368335);   \n        var faker = new Faker<");
+            this.Write("> Create(Guid? id = null)\n    {\n        Randomizer.Seed = new Random(368335);   \n        var faker = new Faker<");
             
             #line 12 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/MockDataTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.Name));
@@ -54,13 +61,9 @@ namespace CodeGeneration.ServerCodeGenerator.Templates
 
 	internal EntityDescription EntityDescription;
 	internal int MaxLineWidth;
-	internal bool NeedFilter;
-	internal string ServiceName;
 	internal MockDataTemplate(EntityDescription entityDescription, int maxLineWidth) {
 		EntityDescription = entityDescription;
 		MaxLineWidth = maxLineWidth;
-		NeedFilter = entityDescription.FilterProperties.Count > 0;
-		ServiceName = EntityDescription.PluralName + "Service";
 	}
 
         

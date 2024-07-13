@@ -52,8 +52,8 @@ public class Restaurant : IEntity
     
     public string KeyWords { get; set; }
 
-    public ICollection<RestaurantImage> RestaurantImages { get; set; }
+    public ICollection<RestaurantImage> RestaurantImages { get; set; } = new List<RestaurantImage>();
     
-    public ICollection<RestaurantOrder> RestaurantOrders { get; set; }
+    public ICollection<RestaurantOrder> RestaurantOrders { get; set; }= new List<RestaurantOrder>();
 
 }

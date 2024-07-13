@@ -10,6 +10,9 @@
 namespace CodeGeneration.ServerCodeGenerator.Templates
 {
     using System.Reflection;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Collections;
     using System;
     
     /// <summary>
@@ -26,16 +29,16 @@ namespace CodeGeneration.ServerCodeGenerator.Templates
         /// </summary>
         public virtual string TransformText()
         {
-            this.Write("namespace Service.TemplateController.PL.Models;\n\npublic class ");
+            this.Write("using Service.TemplateController.DAL.Entities;\n\nnamespace Service.TemplateController.PL.Models;\n\npublic class ");
             
-            #line 5 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ViewModelTemplate.tt"
+            #line 10 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ViewModelTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.Name));
             
             #line default
             #line hidden
             this.Write("ViewModel\n{\n");
             
-            #line 7 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ViewModelTemplate.tt"
+            #line 12 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ViewModelTemplate.tt"
 
 	foreach (var item in PropertyInfos)
 	{
@@ -45,21 +48,21 @@ namespace CodeGeneration.ServerCodeGenerator.Templates
             #line hidden
             this.Write("\tpublic ");
             
-            #line 11 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ViewModelTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Nullable.GetUnderlyingType(item.PropertyType)?.Name ?? item.PropertyType.Name));
+            #line 16 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ViewModelTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(GetTypeAlias(item.PropertyType)));
             
             #line default
             #line hidden
             this.Write(" ");
             
-            #line 11 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ViewModelTemplate.tt"
+            #line 16 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ViewModelTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(item.Name));
             
             #line default
             #line hidden
             this.Write(" { get; set; } \n");
             
-            #line 12 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ViewModelTemplate.tt"
+            #line 17 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ViewModelTemplate.tt"
 
 	}
 
@@ -70,15 +73,53 @@ namespace CodeGeneration.ServerCodeGenerator.Templates
             return this.GenerationEnvironment.ToString();
         }
         
-        #line 18 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ViewModelTemplate.tt"
+        #line 23 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ViewModelTemplate.tt"
 
 	internal EntityDescription EntityDescription;
 	internal int MaxLineWidth;
 	internal PropertyInfo[] PropertyInfos;
+	private Dictionary<Type, string> _typeAlias;
 	internal ViewModelTemplate(EntityDescription entityDescription, int maxLineWidth, PropertyInfo[] propertyInfos) {
 		EntityDescription = entityDescription;
 		MaxLineWidth = maxLineWidth;
 		PropertyInfos = propertyInfos;
+		_typeAlias = new Dictionary<Type, string>()
+		{
+			{ typeof(bool), "bool" },
+			{ typeof(byte), "byte" },
+			{ typeof(sbyte), "sbyte" },
+			{ typeof(char), "char" },
+			{ typeof(decimal), "decimal" },
+			{ typeof(double), "double" },
+			{ typeof(float), "float" },
+			{ typeof(int), "int" },
+			{ typeof(uint), "uint" },
+			{ typeof(nint), "nint" },
+			{ typeof(nuint), "nuint" },
+			{ typeof(long), "long" },
+			{ typeof(ulong), "ulong" },
+			{ typeof(short), "short" },
+			{ typeof(ushort), "ushort" },
+			{ typeof(object), "object" },
+			{ typeof(string), "string" },
+			{ typeof(Guid), "Guid" },
+		};
+	}
+
+	private string GetTypeAlias(Type type)
+	{
+		var key = Nullable.GetUnderlyingType(type) ?? type;
+		var alias = string.Empty;
+		if (!_typeAlias.TryGetValue(key, out alias))
+		{
+			if (key.GetInterfaces().Any(i => i == typeof(IEnumerable)))
+			{
+				alias = new string(key.Name.Where(char.IsLetter).ToArray()) + $"<{key.GenericTypeArguments[0].Name}>";
+				return alias;
+			}
+			return key.Name;
+		}
+		return Nullable.GetUnderlyingType(type) is not null ? $"{alias}?" : alias;
 	}
 
         

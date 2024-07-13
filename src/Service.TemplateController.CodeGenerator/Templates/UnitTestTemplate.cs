@@ -25,123 +25,74 @@ namespace CodeGeneration.ServerCodeGenerator.Templates
         /// </summary>
         public virtual string TransformText()
         {
-            this.Write("using Bogus;\nusing Microsoft.Extensions.DependencyInjection;\nusing Pepegov.UnitOfWork;\nusing Pepegov.UnitOfWork.EntityFramework;\nusing Pepegov.UnitOfWork.EntityFramework.Repository;\nusing Service.TemplateController.BL.Services.Interfaces;\nusing Service.TemplateController.DAL.Entities;\nusing Service.TemplateController.Test.MockData;\n\nusing ");
+            this.Write("using Bogus;\nusing Microsoft.Extensions.DependencyInjection;\nusing Pepegov.UnitOfWork;\nusing Pepegov.UnitOfWork.EntityFramework;\nusing Pepegov.UnitOfWork.EntityFramework.Repository;\nusing Service.TemplateController.BL.Services.Interfaces;\nusing Service.TemplateController.DAL.Entities;\nusing Service.TemplateController.Test.MockData;\nusing ");
             
-            #line 11 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/UnitTestTemplate.tt"
+            #line 10 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/UnitTestTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.Name));
             
             #line default
             #line hidden
             this.Write(" = Service.TemplateController.DAL.Entities.");
             
-            #line 11 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/UnitTestTemplate.tt"
+            #line 10 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/UnitTestTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.Name));
             
             #line default
             #line hidden
             this.Write(";\n\nnamespace Service.TemplateController.Test.Tests;\n\npublic class ");
             
-            #line 15 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/UnitTestTemplate.tt"
+            #line 14 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/UnitTestTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(ServiceName));
             
             #line default
             #line hidden
-            this.Write("Test\n{\n\tprivate I");
+            this.Write("Test  : BaseServiceTest<");
             
-            #line 17 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/UnitTestTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(ServiceName));
-            
-            #line default
-            #line hidden
-            this.Write(" _");
-            
-            #line 17 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/UnitTestTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(ServiceName.ToFirstLower()));
-            
-            #line default
-            #line hidden
-            this.Write(" = null!;\n\tprivate IServiceScope _scope = null!;\n\tprivate IUnitOfWorkEntityFrameworkInstance _unitOfWorkEntityFrameworkInstance = null!;\n\tprivate IRepositoryEntityFramework<");
-            
-            #line 20 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/UnitTestTemplate.tt"
+            #line 14 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/UnitTestTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.Name));
             
             #line default
             #line hidden
-            this.Write("> _");
+            this.Write(">\n{\n\tprivate I");
             
-            #line 20 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/UnitTestTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.Name.ToFirstLower()));
+            #line 16 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/UnitTestTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(ServiceName));
             
             #line default
             #line hidden
-            this.Write("Repository = null!;\n\n\t[SetUp]\n\tpublic void SetUp()\n\t{\n\t\t_scope = DIProvider.ServiceProvider.CreateScope();\n\t\t_");
+            this.Write(" _service = null!;\n    private IServiceScope _scope = null!; \n    private readonly MockBase<");
+            
+            #line 18 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/UnitTestTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.Name));
+            
+            #line default
+            #line hidden
+            this.Write("> _mock = new Mock");
+            
+            #line 18 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/UnitTestTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.Name));
+            
+            #line default
+            #line hidden
+            this.Write("();\n\n    [SetUp]\n    public void SetUp()\n    {\n        _scope = DIProvider.ServiceProvider.CreateScope();\n        UnitOfWorkEntityFrameworkInstance = DIProvider.ServiceProvider.GetRequiredService<IUnitOfWorkManager>()\n            .GetInstance<IUnitOfWorkEntityFrameworkInstance>();\n        Repository = UnitOfWorkEntityFrameworkInstance.GetRepository<");
             
             #line 26 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/UnitTestTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(ServiceName.ToFirstLower()));
+            this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.Name));
             
             #line default
             #line hidden
-            this.Write(" = _scope.ServiceProvider.GetRequiredService<I");
+            this.Write(">();\n        _service = _scope.ServiceProvider.GetRequiredService<I");
             
-            #line 26 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/UnitTestTemplate.tt"
+            #line 27 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/UnitTestTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(ServiceName));
             
             #line default
             #line hidden
-            this.Write(">();\n\t\t_unitOfWorkEntityFrameworkInstance = DIProvider.ServiceProvider.GetRequiredService<IUnitOfWorkManager>()\n\t\t\t.GetInstance<IUnitOfWorkEntityFrameworkInstance>();\n\t\t_");
-            
-            #line 29 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/UnitTestTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.Name.ToFirstLower()));
-            
-            #line default
-            #line hidden
-            this.Write("Repository = _unitOfWorkEntityFrameworkInstance.GetRepository<");
-            
-            #line 29 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/UnitTestTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.Name));
-            
-            #line default
-            #line hidden
-            this.Write(">();\n\t}\n\t\n\t[Test]\n\tpublic async Task Create");
-            
-            #line 33 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/UnitTestTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.Name));
-            
-            #line default
-            #line hidden
-            this.Write("_Success()\n\t{\n\t\tvar entity = Mock");
-            
-            #line 35 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/UnitTestTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.Name));
-            
-            #line default
-            #line hidden
-            this.Write(".Create();\n\t\tvar result = await _");
-            
-            #line 36 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/UnitTestTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(ServiceName.ToFirstLower()));
-            
-            #line default
-            #line hidden
-            this.Write(".CreateAsync(entity);\n\t\tAssert.That(result is null, Is.True, $\"Create ");
-            
-            #line 37 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/UnitTestTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.Name));
-            
-            #line default
-            #line hidden
-            this.Write(" is success\");\n\t}\n\t\n\t\n\t[Test]\n\tpublic async Task Get");
-            
-            #line 42 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/UnitTestTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.Name));
-            
-            #line default
-            #line hidden
-            this.Write("_Success()\n\t{\n\t}\n}\n\n\n");
+            this.Write(">();\n        BaseService = _service;\n        Mock = _mock;\n    }\n    [Test]\n    public new async Task CreateEntity_Success()\n    {\n        await base.CreateEntity_Success();\n    }\n    [Test]\n    public new async Task DeleteEntity_Success()\n    {\n        await base.DeleteEntity_Success();\n    }\n    [Test]\n    public new async Task GetPaged_Success()\n    {\n        await base.GetPaged_Success();\n    }\n}\n\n\n");
             return this.GenerationEnvironment.ToString();
         }
         
-        #line 48 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/UnitTestTemplate.tt"
+        #line 49 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/UnitTestTemplate.tt"
 
 	internal EntityDescription EntityDescription;
 	internal int MaxLineWidth;

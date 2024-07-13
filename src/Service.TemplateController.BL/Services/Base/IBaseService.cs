@@ -11,6 +11,7 @@ namespace Service.TemplateController.BL.Services.Base;
 /// <typeparam name="TEntity">Type for dbSet which implements</typeparam>
 public interface IBaseService<TEntity> where TEntity : IEntity
 {
+    Task<bool> DeleteAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default);
     Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken = default);
     
     Task<TEntity?> GetByIdAsync(Guid id, Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
@@ -23,7 +24,7 @@ public interface IBaseService<TEntity> where TEntity : IEntity
     
     Task<TEntity?> CreateAsync(TEntity entity, CancellationToken cancellationToken = default);
     
-    Task<bool?> CreateAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default);
+    Task<bool> CreateAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default);
 
     Task<bool> UpdateAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default);
     

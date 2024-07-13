@@ -27,6 +27,21 @@ public class BaseService<TEntity> : IBaseService<TEntity> where TEntity : class,
         Repository = UnitOfWork.GetRepository<TEntity>();
     }
 
+    public async Task<bool> DeleteAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            Repository.Delete(entities);
+            await UnitOfWork.SaveChangesAsync(cancellationToken);
+            return UnitOfWork.LastSaveChangesResult.IsOk;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, $"Произошла ошибка при удалении сущности {typeof(TEntity).Name} c id {string.Join(", ", entities.Select(i => i.Id))}: {e.Message}");
+            throw;
+        }
+    }
+
     public virtual async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
         try
@@ -57,12 +72,6 @@ public class BaseService<TEntity> : IBaseService<TEntity> where TEntity : class,
     {
         return GetAllAsync(predicate: null, include: include, orderBy: orderBy, cancellationToken: cancellationToken);
     }
-
-    public virtual async Task<IList<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>>? predicate = null, Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null, CancellationToken cancellationToken = default)
-    {
-        return await Repository.GetAllAsync(predicate: predicate, include: include, cancellationToken: cancellationToken);
-    }
-
     public virtual async Task<TEntity?> CreateAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         try
@@ -83,7 +92,7 @@ public class BaseService<TEntity> : IBaseService<TEntity> where TEntity : class,
         }
     }
 
-    public virtual async Task<bool?> CreateAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
+    public virtual async Task<bool> CreateAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
     {
         try
         {

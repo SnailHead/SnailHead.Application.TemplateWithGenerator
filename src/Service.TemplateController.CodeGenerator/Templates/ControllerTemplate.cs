@@ -25,72 +25,72 @@ namespace CodeGeneration.ServerCodeGenerator.Templates
         /// </summary>
         public virtual string TransformText()
         {
-            this.Write("using System.Threading.Tasks;\nusing Microsoft.AspNetCore.Mvc;\nusing Pepegov.MicroserviceFramework.ApiResults;\nusing Pepegov.MicroserviceFramework.AspNetCore.WebApi;\nusing Pepegov.MicroserviceFramework.Data.Exceptions;\nusing Service.TemplateController.BL.Services.Interfaces;\nusing Microsoft.AspNetCore.Authorization;\nusing Service.TemplateController.DAL.Entities;\nusing System.Net;\nusing Pepegov.UnitOfWork.Entityes;\nusing Service.TemplateController.PL.Models.Filters;\n\nnamespace Service.TemplateController.PL.Controllers;\n\n[Route(\"/");
+            this.Write("using System.Threading.Tasks;\nusing Microsoft.AspNetCore.Mvc;\nusing Pepegov.MicroserviceFramework.ApiResults;\nusing Pepegov.MicroserviceFramework.AspNetCore.WebApi;\nusing Pepegov.MicroserviceFramework.Data.Exceptions;\nusing Service.TemplateController.BL.Services.Interfaces;\nusing Microsoft.AspNetCore.Authorization;\nusing Service.TemplateController.DAL.Entities;\nusing System.Net;\nusing Pepegov.UnitOfWork.Entityes;\nusing AutoMapper;\nusing Service.TemplateController.PL.Models.Filters;\nusing Service.TemplateController.PL.Models;\n\nnamespace Service.TemplateController.PL.Controllers;\n\n[Route(\"/");
             
-            #line 16 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
+            #line 18 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.PluralName.PascalToKebabCase()));
             
             #line default
             #line hidden
             this.Write("\")]\npublic class ");
             
-            #line 17 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
+            #line 19 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.PluralName));
             
             #line default
             #line hidden
             this.Write("Controller : ControllerBase\n{\n\tprivate readonly I");
             
-            #line 19 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
+            #line 21 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(ServiceName));
             
             #line default
             #line hidden
             this.Write(" _");
             
-            #line 19 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
+            #line 21 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(ServiceName.ToFirstLower()));
             
             #line default
             #line hidden
-            this.Write(";\n\n\tpublic ");
+            this.Write(";\n\tprivate readonly IMapper _mapper;\n\n\tpublic ");
             
-            #line 21 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
+            #line 24 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.PluralName));
             
             #line default
             #line hidden
             this.Write("Controller(I");
             
-            #line 21 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
+            #line 24 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(ServiceName));
             
             #line default
             #line hidden
             this.Write(" ");
             
-            #line 21 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
+            #line 24 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(ServiceName.ToFirstLower()));
             
             #line default
             #line hidden
-            this.Write(")\n\t{\n\t\t_");
+            this.Write(", IMapper mapper)\n\t{\n\t\t_");
             
-            #line 23 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
+            #line 26 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(ServiceName.ToFirstLower()));
             
             #line default
             #line hidden
             this.Write(" = ");
             
-            #line 23 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
+            #line 26 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(ServiceName.ToFirstLower()));
             
             #line default
             #line hidden
-            this.Write(";\n\t}\n\t");
+            this.Write(";\n\t\t_mapper = mapper;\n\t}\n\t");
             
-            #line 25 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
+            #line 29 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
 
 	if (NeedFilter)
 	{
@@ -100,7 +100,7 @@ namespace CodeGeneration.ServerCodeGenerator.Templates
             #line hidden
             this.Write("[HttpPost]");
             
-            #line 28 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
+            #line 32 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
 
 	}
 	else
@@ -111,163 +111,177 @@ namespace CodeGeneration.ServerCodeGenerator.Templates
             #line hidden
             this.Write("[HttpGet]");
             
-            #line 32 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
+            #line 36 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
 
 	}
 	
             
             #line default
             #line hidden
-            this.Write("\n\t[ProducesResponseType(typeof(ApiResult<");
+            this.Write("\n\t[ProducesResponseType(typeof(ApiResult<IPagedList<");
             
-            #line 36 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
+            #line 40 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.PluralName));
             
             #line default
             #line hidden
-            this.Write(">), StatusCodes.Status200OK)]\n\t[Route(\"get-paged-list\")]\n\tpublic async Task<IResult> GetPagedList(");
+            this.Write("ViewModel>>), StatusCodes.Status200OK)]\n\t[Route(\"get-paged-list\")]\n\tpublic async Task<IResult> GetPagedList(");
             
-            #line 38 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
+            #line 42 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
 if (NeedFilter) {
             
             #line default
             #line hidden
             this.Write("[FromBody] ");
             
-            #line 38 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
+            #line 42 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.PluralName));
             
             #line default
             #line hidden
             this.Write("FilterModel filter,");
             
-            #line 38 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
+            #line 42 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
 }
             
             #line default
             #line hidden
             this.Write(" [FromQuery] int page = 1, int pageSize = 20)\n\t{\n\t\tvar pagedList = await _");
             
-            #line 40 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
+            #line 44 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(ServiceName.ToFirstLower()));
             
             #line default
             #line hidden
             this.Write(".GetPagedListAsync(page, pageSize, cancellationToken: HttpContext.RequestAborted);\n\t\treturn Results.Extensions.Custom(new ApiResult<IPagedList<");
             
-            #line 41 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
+            #line 45 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.PluralName));
             
             #line default
             #line hidden
-            this.Write(">>(pagedList, HttpStatusCode.OK));\n\t}\n\n\t[HttpGet]\n\t[ProducesResponseType(typeof(ApiResult<");
+            this.Write("ViewModel>>(_mapper.Map<IPagedList<");
             
             #line 45 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.PluralName));
             
             #line default
             #line hidden
-            this.Write(">), StatusCodes.Status200OK)]\n\t[ProducesResponseType(typeof(ApiResult), StatusCodes.Status400BadRequest)]\n\t[Route(\"get-by-id\")]\n\tpublic async Task<IResult> GetById(Guid id)\n\t{\n\t\tvar entity = await _");
+            this.Write("ViewModel>>(pagedList), HttpStatusCode.OK));\n\t}\n\n\t[HttpGet]\n\t[ProducesResponseType(typeof(ApiResult<");
             
-            #line 50 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
+            #line 49 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.PluralName));
+            
+            #line default
+            #line hidden
+            this.Write("ViewModel>), StatusCodes.Status200OK)]\n\t[ProducesResponseType(typeof(ApiResult), StatusCodes.Status400BadRequest)]\n\t[Route(\"get-by-id\")]\n\tpublic async Task<IResult> GetById(Guid id)\n\t{\n\t\tvar entity = await _");
+            
+            #line 54 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(ServiceName.ToFirstLower()));
             
             #line default
             #line hidden
             this.Write(".GetByIdAsync(id, cancellationToken: HttpContext.RequestAborted);\n\t\tif (entity is null)\n\t\t{\n\t\t\treturn Results.Extensions.Custom(new ApiResult(HttpStatusCode.NotFound, new MicroserviceNotFoundException($\"");
             
-            #line 53 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
+            #line 57 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.PluralName));
             
             #line default
             #line hidden
             this.Write(" with id {id} not found\")));\n\t\t}\n\t\treturn Results.Extensions.Custom(new ApiResult<");
             
-            #line 55 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
+            #line 59 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.PluralName));
             
             #line default
             #line hidden
-            this.Write(">(entity, HttpStatusCode.OK));\n\t}\n\n\t[HttpPost]\n\t[ValidateAntiForgeryToken]\n\t[ProducesResponseType(typeof(ApiResult<");
+            this.Write("ViewModel>(_mapper.Map<");
             
-            #line 60 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
+            #line 59 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.PluralName));
+            
+            #line default
+            #line hidden
+            this.Write("ViewModel>(entity), HttpStatusCode.OK));\n\t}\n\n\t[HttpPost]\n\t[ValidateAntiForgeryToken]\n\t[ProducesResponseType(typeof(ApiResult<");
+            
+            #line 64 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.PluralName));
             
             #line default
             #line hidden
             this.Write(">), StatusCodes.Status200OK)]\n\t[ProducesResponseType(typeof(ApiResult), StatusCodes.Status400BadRequest)]\n\t[Route(\"update\")]\n\tpublic async Task<IResult> Update(");
             
-            #line 63 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
+            #line 67 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.Name));
             
             #line default
             #line hidden
             this.Write(" model)\n\t{\n\t\tvar result = await _");
             
-            #line 65 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
+            #line 69 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(ServiceName.ToFirstLower()));
             
             #line default
             #line hidden
             this.Write(".UpdateAsync(model, cancellationToken: HttpContext.RequestAborted);\n\t\tif (result is null)\n\t\t{\n\t\t\treturn Results.Extensions.Custom(new ApiResult(HttpStatusCode.BadRequest, new MicroserviceInvalidOperationException(\"Update ");
             
-            #line 68 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
+            #line 72 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.Name));
             
             #line default
             #line hidden
             this.Write(" failed\")));\n\t\t}\n\t\treturn Results.Extensions.Custom(new ApiResult<");
             
-            #line 70 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
+            #line 74 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.Name));
             
             #line default
             #line hidden
             this.Write(">(model, HttpStatusCode.OK));\n\t}\n\n\t[HttpPost]\n\t[ValidateAntiForgeryToken]\n\t[ProducesResponseType(typeof(ApiResult<");
             
-            #line 75 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
+            #line 79 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.PluralName));
             
             #line default
             #line hidden
             this.Write(">), StatusCodes.Status200OK)]\n\t[ProducesResponseType(typeof(ApiResult), StatusCodes.Status400BadRequest)]\n\t[Route(\"create\")]\n\tpublic async Task<IResult> Create(");
             
-            #line 78 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
+            #line 82 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.Name));
             
             #line default
             #line hidden
             this.Write(" model)\n\t{\n\t\tvar result = await _");
             
-            #line 80 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
+            #line 84 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(ServiceName.ToFirstLower()));
             
             #line default
             #line hidden
             this.Write(".CreateAsync(model, cancellationToken: HttpContext.RequestAborted);\n\t\tif (result is null)\n\t\t{\n\t\t\treturn Results.Extensions.Custom(new ApiResult(HttpStatusCode.BadRequest, new MicroserviceInvalidOperationException(\"Update ");
             
-            #line 83 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
+            #line 87 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.Name));
             
             #line default
             #line hidden
             this.Write(" failed\")));\n\t\t}\n\t\treturn Results.Extensions.Custom(new ApiResult<");
             
-            #line 85 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
+            #line 89 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.Name));
             
             #line default
             #line hidden
             this.Write(">(model, HttpStatusCode.OK));\n\t}\n\t\n\t[HttpDelete]\n\t[Route(\"delete\")]\n\t[ProducesResponseType(typeof(ApiResult), StatusCodes.Status200OK)]\n\t[ProducesResponseType(typeof(ApiResult), StatusCodes.Status400BadRequest)]\n\tpublic async Task<IResult> Delete(Guid id)\n\t{\n\t\tvar result = await _");
             
-            #line 94 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
+            #line 98 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(ServiceName.ToFirstLower()));
             
             #line default
             #line hidden
             this.Write(".DeleteAsync(id, cancellationToken: HttpContext.RequestAborted);\n\t\tif (!result)\n\t\t{\n\t\t\treturn Results.Extensions.Custom(new ApiResult(HttpStatusCode.BadRequest, new MicroserviceInvalidOperationException(\"Delete ");
             
-            #line 97 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
+            #line 101 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(EntityDescription.PluralName));
             
             #line default
@@ -276,7 +290,7 @@ if (NeedFilter) {
             return this.GenerationEnvironment.ToString();
         }
         
-        #line 103 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
+        #line 107 "/Users/aleksejromanov/Desktop/Projects/Service.TemplateController/src/Service.TemplateController.CodeGenerator/Templates/ControllerTemplate.tt"
 
 	internal EntityDescription EntityDescription;
 	internal int MaxLineWidth;
