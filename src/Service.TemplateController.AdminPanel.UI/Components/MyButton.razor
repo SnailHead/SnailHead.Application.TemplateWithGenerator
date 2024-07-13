@@ -1,0 +1,47 @@
+﻿@namespace Service.TemplateController.AdminPanel.UI.Components
+
+<MudButton Class="@Class" Color="@Color" Disabled="@_processing" Href="@Href" OnClick="ProcessSomething" Style="background-image: linear-gradient( 109.6deg,  #3CAEFD,#1DCDAD 100% );" Variant="@Variant">
+    @if (_processing)
+    {
+        <MudProgressCircular Class="mr-1" Indeterminate="true" Size="Size.Small"/>
+        <MudText>@ChildContent</MudText>
+    }
+    else
+    {
+        <MudText>@ChildContent</MudText>
+    }
+</MudButton>
+
+@code {
+
+    [Parameter]
+    public Func<Task>? OnClickHandler { get; set; } = () => Task.CompletedTask;
+
+    [Parameter]
+    public string? Class { get; set; } = null;
+
+    [Parameter]
+    public Color Color { get; set; } = Color.Primary;
+
+    [Parameter]
+    public Variant Variant { get; set; } = Variant.Filled;
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public string? Href { get; set; } = null;
+
+    private bool _processing = false;
+
+    async Task ProcessSomething()
+    {
+        if (OnClickHandler is not null)
+        {
+            _processing = true;
+            await OnClickHandler.Invoke();
+            _processing = false;
+        }
+    }
+
+}

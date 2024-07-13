@@ -1,0 +1,17 @@
+@typeparam T where T: class
+<MudAutocomplete T="@T"
+                 @ref="_autocomplete"
+                 Label="@Label"
+                 Placeholder="@Placeholder"
+                 Disabled="@Disabled"
+                 Clearable
+                 ShowProgressIndicator
+                 ResetValueOnEmptyText
+                 @bind-Value="@SelectedValue"
+                 ToStringFunc="ToStringFunc"
+                 MaxItems="null"
+                 SearchFuncWithCancel="(query, ctx) => HandleSearch(query, ctx)">
+    @*<MoreItemsTemplate> -- Currently not implemented force reload
+        <MudButton OnClick="HandleNextPage"><MudText Typo="Typo.subtitle2">Загрузить еще</MudText></MudButton>
+    </MoreItemsTemplate>*@
+</MudAutocomplete>

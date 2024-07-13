@@ -1,0 +1,13 @@
+﻿<MudStack Spacing="0">
+    <MudText Typo="Typo.body1">@Title</MudText>
+    <MudText Typo="Typo.body2">@Message</MudText>
+</MudStack>
+
+@code {
+
+    [Parameter]
+    public string Title { get; set; } = "";
+    [Parameter]
+    public string Message { get; set; } = "";
+
+}

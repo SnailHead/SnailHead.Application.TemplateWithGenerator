@@ -1,0 +1,150 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.IdentityModel.JsonWebTokens
+@using System.Security.Claims
+@using Microsoft.Extensions.Localization
+@inherits LayoutComponentBase
+<MudRTLProvider RightToLeft="RTLEnable">
+<MudThemeProvider Theme="Theme"/>
+<MudDialogProvider/>
+<MudSnackbarProvider/>
+<MudLayout>
+	<Preloader Visible="@IsLoading"/>
+	<MudAppBar Dense="true" Elevation="1" Style="background: linear-gradient(91.42deg, #2F69FF 0%, #00C0A9 100%)!important;">
+		<MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@ToggleDrawer" />
+		<MudSpacer/>
+		<CascadingAuthenticationState>
+			<AuthorizeView>
+				<Authorized>
+					<MudButton Color="Color.Default" OnClick="@LogOut" Variant="Variant.Outlined">@localizer["layout.logout"]</MudButton>
+				</Authorized>
+			</AuthorizeView>
+		</CascadingAuthenticationState>
+	</MudAppBar>
+	<MudDrawer @bind-Open="@open" Elevation="1" Variant="@DrawerVariant.Mini" OpenMiniOnHover="false" Fixed="true">
+		<MudDrawerHeader>
+			@if (open)
+			{
+				<MudImage Src="/images/Logo.svg"></MudImage>
+			}
+		</MudDrawerHeader>
+		<MudNavMenu>
+			<MudNavLink Href="/payments" Icon="@Icons.Material.Filled.Payment">@localizer["layout.payments"]</MudNavLink>
+			<MudNavLink Href="/coin-settings" Icon="@Icons.Material.Filled.CurrencyBitcoin">@localizer["layout.coinSettings"]</MudNavLink>
+			<MudNavLink Href="/statistic" Icon="@Icons.Material.Filled.AreaChart">@localizer["layout.statistic"]</MudNavLink>
+			<MudNavLink Href="/shop" Icon="@Icons.Material.Filled.People">@localizer["layout.shop"]</MudNavLink>
+		</MudNavMenu>
+		<MudSpacer></MudSpacer>
+		<MudMenu Icon="@Icons.Material.Filled.Translate" AnchorOrigin="@Origin.TopRight" TransformOrigin="@Origin.BottomLeft" Size="Size.Medium">
+			<MudMenuItem OnClick="@(() => ChangeLanguage("en-US"))">EN</MudMenuItem>
+			<MudMenuItem OnClick="@(() => ChangeLanguage("ru-RU"))">RU</MudMenuItem>
+			<MudMenuItem OnClick="@(() => ChangeLanguage("ar-SA"))">AR</MudMenuItem>
+		</MudMenu>
+	</MudDrawer>
+	<CascadingValue TValue="Action<bool>" Value="@ChangeIsLoading">
+		<MudMainContent Class="d-flex flex-column" Style="height: 100vh;overflow-y: scroll;">
+			<MudContainer Class="flex-grow-1 flex-shrink-0 p-0" MaxWidth="MaxWidth.ExtraLarge">
+				@Body
+			</MudContainer>
+		</MudMainContent>
+	</CascadingValue>
+</MudLayout>
+</MudRTLProvider>
+
+@code
+{
+	[Inject] AuthenticationStateProvider AuthState {get; set;} = null!;
+	[Inject] IJSRuntime js {get; set;} = null!;
+	[Inject] IStringLocalizer<object> localizer {get; set;} = null!;
+
+	[Inject]
+	private NavigationManager _navigationManager { get; set; }
+	private ClaimsPrincipal _user = null!;
+	private bool _isAuthenticated = false;
+	public bool IsLoading;
+	private bool open = false;
+	private bool RTLEnable = Thread.CurrentThread.CurrentUICulture.Name == "ar-SA";
+
+	public static MudTheme Theme = new()
+	{
+		
+		Typography = new()
+		{
+			H1 = new()
+			{
+				FontSize = "32px",
+				FontWeight = 700,
+				FontFamily = new []{"CeraPro"}
+			},
+			H2 = new()
+			{
+				FontWeight = 700,
+				FontSize = "16px",
+				FontFamily = new []{"CeraPro"}
+			},
+			Default = new()
+			{
+				FontWeight = 400,
+				FontSize = "16px",
+				FontFamily = new []{"CeraPro"}
+			}
+		},
+		PaletteLight = new()
+		{
+			ActionDefault = "#FFFFFF",
+			DrawerIcon = "#FFFFFF",
+			TextSecondary = "#FFFFFF",
+			Surface = "#151515",
+			DrawerText = "#FFFFFF",
+			DrawerBackground = "#151515",
+			Primary = "#2F69FF",
+			Background = "#0D0D0D",
+			BackgroundGray = "#151515",
+			TextPrimary = "#FFFFFF",
+			Tertiary = "#FFFFFF"
+		}
+	};
+
+	private async Task ChangeLanguage(string name)
+	{
+		await js.InvokeVoidAsync("cultureInfo.set", name);
+		_navigationManager.NavigateTo(_navigationManager.Uri, true);
+	}
+
+	protected override async Task OnInitializedAsync()
+	{
+		var authState = await AuthState.GetAuthenticationStateAsync();
+		_isAuthenticated = authState.User.Identity?.IsAuthenticated ?? false;
+		_user = authState.User;
+		if (_isAuthenticated)
+		{
+			var userId = Guid.Parse(_user.FindFirst(JwtRegisteredClaimNames.Sub)!.Value);
+		}
+
+		if (!_isAuthenticated && !_navigationManager.Uri.Contains("account/login"))
+		{
+			//_navigationManager.NavigateTo($"account/login");
+		}
+		else if (_isAuthenticated && _navigationManager.Uri.Contains("login/auth"))
+		{
+			_navigationManager.NavigateTo($"/");
+		}
+		StateHasChanged();
+
+	}
+	public void ChangeIsLoading(bool isLoading)
+	{
+		IsLoading = isLoading;
+		StateHasChanged();
+	}
+	protected async Task LogOut()
+	{
+		var authState = await AuthState.GetAuthenticationStateAsync();
+		_isAuthenticated = authState.User.Identity?.IsAuthenticated ?? false;
+		_navigationManager.NavigateTo("account/login");
+	}
+
+	void ToggleDrawer()
+	{
+		open = !open;
+	}
+}

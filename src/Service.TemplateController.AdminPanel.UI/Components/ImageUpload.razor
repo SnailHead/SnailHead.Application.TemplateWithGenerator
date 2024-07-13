@@ -1,0 +1,28 @@
+﻿@using Microsoft.AspNetCore.Components.Forms
+<MudElement Class="p-4 d-flex justify-center position-relative">
+    <MudImage Alt="@Alt"
+              Class="rounded-lg"
+              Height="Height"
+              ObjectFit="ObjectFit"
+              Src="@(ImageUrl ?? NoImageUrl)"
+              Width="Width"
+              @onmouseenter="ShowUploadButton"
+              @onmouseleave="HideUploadButton"/>
+    <MudElement Class="@("position-absolute top-0 start-0 p-2 " + (_showUploadButton ? "d-block" : "d-none"))"
+                @onmouseenter="ShowUploadButton">
+        <MudFileUpload T="IBrowserFile"
+                       FilesChanged="OnFileUploaded"
+                       Accept="@AcceptExtensions"
+                       MaximumFileCount="1"
+                       Disabled="Disabled">
+            <ActivatorContent>
+                <MudFab HtmlTag="label"
+                        Color="Color.Primary"
+                        Size="Size.Large"
+                        Icon="@Icons.Material.Filled.Image"
+                        Label="Загрузить"
+                        @onmouseenter="ShowUploadButton"/>
+             </ActivatorContent>
+        </MudFileUpload>
+    </MudElement>
+</MudElement>

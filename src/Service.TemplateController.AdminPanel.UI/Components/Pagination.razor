@@ -1,0 +1,15 @@
+﻿@namespace Service.TemplateController.AdminPanel.UI.Components
+@inherits Service.TemplateController.AdminPanel.UI.Application.DisposablePage
+
+<MudGrid Class="align-center d-flex flex-column">
+    <MudItem md="6" sm="12">
+        <MudPagination BoundaryCount="@((int)Breakpoint < (int)Breakpoint.Md ? 0 : 2)" Class="mb-4 mt-4" Count="@TotalPages" MiddleCount="@((int)Breakpoint < (int)Breakpoint.Md ? 2 : 5)" SelectedChanged="ChangePage"/>
+    </MudItem>
+</MudGrid>
+@code
+{
+    [Parameter]
+    public int TotalPages { get; set; } = 0;
+    [Parameter]
+    public Func<int, Task> ChangePage { get; set; }
+}

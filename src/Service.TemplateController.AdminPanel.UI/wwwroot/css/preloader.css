@@ -1,0 +1,124 @@
+﻿.invisible {
+    display: none;
+}
+.preloader {
+    background: #0D0D0D;
+    backdrop-filter: blur(10px);
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+    z-index: 80;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+}
+
+preloader::before {
+    content: ' ';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    z-index: 0;
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    background: rgba(255, 255, 255, 0.8);
+}
+
+.logo-svg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 100%;
+    width: 100%;
+}
+.logo-svg path {
+    /* fill: red !important; */
+    transform-origin: center;
+    animation-name: animation;
+    animation-duration: 1.4s;
+    animation-iteration-count: infinite;
+}
+#container {
+    width: 300px;
+    height: 270px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.preloader-svg,
+.preloader-svg-with-picture {
+    position: relative;
+    z-index: 100;
+}
+
+.preloader-svg-with-picture {
+    left: 12px;
+    top: 80px;
+    position: absolute;
+}
+
+.preloader-svg-second {
+    position: absolute;
+    z-index: 100;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#spinner {
+    transform-origin: center;
+    animation-name: animation;
+    animation-duration: 1.4s;
+    animation-iteration-count: infinite;
+}
+
+#spinner-second {
+    transform-origin: center;
+    animation-name: animation-revert;
+    animation-duration: 1.4s;
+    animation-iteration-count: infinite;
+}
+
+@keyframes animation-revert {
+    0% {
+        stroke-dasharray: 1 98;
+        stroke-dashoffset: 80;
+    }
+    50% {
+        stroke-dasharray: 80 8;
+        stroke-dashoffset: 140;
+    }
+    100% {
+        stroke-dasharray: 1 98;
+        stroke-dashoffset: 280;
+    }
+}
+
+@keyframes animation {
+    0% {
+        stroke-dasharray: 1 98;
+        stroke-dashoffset: -105;
+    }
+    50% {
+        stroke-dasharray: 80 10;
+        stroke-dashoffset: -160;
+    }
+    100% {
+        stroke-dasharray: 1 98;
+        stroke-dashoffset: -300;
+    }
+}

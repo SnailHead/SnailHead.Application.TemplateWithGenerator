@@ -1,0 +1,16 @@
+﻿@inherits Service.TemplateController.AdminPanel.UI.Application.DisposablePage
+
+<PageTitle>Ошибка - QRON</PageTitle>
+<MudPaper>
+    <MudText Align="Align.Center" Typo="Typo.h4">Произошла необработанная ошибка</MudText>
+    <MudText Class="ml-5">@Exception.Message</MudText>
+    <MudExpansionPanel Text="Подробнее">
+        <MudText>@Exception</MudText>
+    </MudExpansionPanel>
+    <MudItem Class="d-flex justify-content-center py-4">
+        <MudButton Class="mx-auto"
+               Variant="Variant.Filled"
+               Color="Color.Primary"
+               OnClick="@HandleSubmitClick">На главную</MudButton>
+    </MudItem>
+</MudPaper>

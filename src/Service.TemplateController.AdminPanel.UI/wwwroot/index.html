@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Cryppo Admin</title>
+    <base href="/" />
+    <link href="css/app.css" rel="stylesheet" />
+    <link href="css/bootstrap.css" rel="stylesheet" />
+    <link href="css/preloader.css" rel="stylesheet" />
+    <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div id="app">
+        <div class="preloader">
+            <div class="preloader__image-border" id="container">
+                <svg style="height: 100%; width: 100%" class="logo-svg" width="53" height="53" viewBox="0 0 53 53" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        fill-rule="evenodd"
+                        clip-rule="evenodd"
+                        d="M22.5398 41.3022C16.167 39.5726 11.4795 33.7415 11.4795 26.8145C11.4795 24.5757 11.9691 22.4515 12.847 20.5432H19.413C19.6273 20.5432 19.8415 20.3287 19.6273 20.1142C19.1987 19.6852 19.0456 18.8357 19.2599 18.1922C19.417 17.7203 19.8415 17.3259 20.4844 17.1114C21.3415 16.8969 21.9843 17.1114 22.4128 17.5403C22.423 17.5505 22.433 17.5605 22.4428 17.5703C22.7195 17.8474 22.8258 17.9539 22.9057 17.9368C22.9556 17.9262 22.9952 17.8675 23.0594 17.7721C23.0667 17.7613 23.0743 17.7501 23.0823 17.7383C23.3284 17.3764 23.5894 17.2005 24.1056 17.2005H25.1901H27.7514C29.2514 17.2005 30.5553 18.3226 30.5553 19.6852V19.6853C30.5553 19.7925 30.5553 19.8461 30.5821 19.8729C30.6089 19.8997 30.6625 19.8997 30.7696 19.8997H34.6265C37.706 19.8997 40.1977 22.4736 40.1977 25.6909V26.5488C40.1977 30.1951 37.8653 33.1979 34.3071 33.4124H31.5623H29.0554C27.984 33.4124 26.6983 32.9835 25.8412 32.34C25.619 32.1731 25.4127 32.34 25.4127 32.5545V33.1979C25.4127 36.2918 24.3242 39.1242 22.5398 41.3022ZM27.4805 20.8483C27.4805 21.5185 26.9375 22.0619 26.2677 22.0619C25.5979 22.0619 25.0549 21.5185 25.0549 20.8483C25.0549 20.178 25.5979 19.6347 26.2677 19.6347C26.9375 19.6347 27.4805 20.178 27.4805 20.8483Z"
+                        fill="#2F69FF"
+                    />
+                    <path
+                        fill-rule="evenodd"
+                        clip-rule="evenodd"
+                        d="M26.4731 43.4216C35.8083 43.4216 43.3775 35.8455 43.3775 26.4982C43.3775 17.1509 35.8083 9.57489 26.4731 9.57489C17.1378 9.57489 9.56869 17.1509 9.56869 26.4982C9.56869 35.8455 17.1378 43.4216 26.4731 43.4216ZM26.4731 45.3215C36.8578 45.3215 45.2762 36.8941 45.2762 26.4982C45.2762 16.1024 36.8578 7.67493 26.4731 7.67493C16.0884 7.67493 7.66992 16.1024 7.66992 26.4982C7.66992 36.8941 16.0884 45.3215 26.4731 45.3215Z"
+                        fill="#2F69FF"
+                    />
+
+                </svg>
+                <svg class="preloader-svg" height="270" viewBox="0 0 100 100" width="470" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="50" id="spinner" r="45" style="fill:transparent;stroke:#2F69FF;stroke-width: 2.2px;stroke-linecap: round;"/>
+                </svg>
+                <svg class="preloader-svg-second" height="440" viewBox="0 0 100 100" width="240" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="50" id="spinner-second" r="46" style="fill:transparent;stroke:#2F69FF;stroke-width: 2.2px;stroke-linecap: round;"/>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <div id="blazor-error-ui">
+        An unhandled error has occurred.
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
+    <script src="_framework/blazor.webassembly.js"></script>
+    <script src="_content/MudBlazor/MudBlazor.min.js"></script>
+    <script src="js/downloadFile.js"></script>
+    <script>
+        window.cultureInfo = {
+            get: () => window.localStorage['BlazorCulture'],
+            set: (value) => window.localStorage['BlazorCulture'] = value
+        };
+    </script>
+</body>
+
+</html>
